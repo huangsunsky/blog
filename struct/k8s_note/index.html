@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/struct/">
+    
+    struct
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/struct/k8s_note/">
+    
+    K8s Note
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>K8s Note</h1>
+  <time>Last updated Wed Oct 30, 2019</time>
+  <div>
+      <article id="content">
+          
+
+<h1 id="k8s-备忘">k8s 备忘</h1>
+
+<h2 id="ingress-配置证书">ingress 配置证书</h2>
+
+<p>首先要在 <code>ingress</code> 所在 <code>namespace</code> 下创建 <code>tls</code> 类型的 <code>secret</code>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create secret tls https-certs --key /path/to/keyfile --cert /path/to/certfile -n the-namespace</code></pre></div>
+<p>修改 <code>ingress</code> 配置，<code>kubectl edit ing ingname -n the-namespace</code>，在 <code>spec</code> 添加如下内容，注意和 <code>rules</code> 同级:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">tls:
+- hosts:
+  - www.test.com
+  secretName: https-certs</code></pre></div>
+<p><code>ingress</code> 配置了 https 证书后默认会强制跳转到 https 协议，如果不想强制跳转，可以在 <code>annotations</code> 添加如下配置:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">nginx.ingress.kubernetes.io/ssl-redirect: <span style="color:#666;font-style:italic">&#34;false&#34;</span></code></pre></div>
+<p>旧版本的配置无需加上 nginx 前缀:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">ingress.kubernetes.io/ssl-redirect: <span style="color:#666;font-style:italic">&#34;false&#34;</span></code></pre></div>
+<p>更多的 annotations 配置可以查看 <a href="https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md">github 文档</a></p>
+
+<h2 id="ingress-配置超时">ingress 配置超时</h2>
+
+<p>应用接口响应较慢的情况下可能需要修改 nginx 的超时配置，默认是 60s，可以在 <code>annotations</code> 添加如下配置:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">annotations:
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 100M
+    nginx.ingress.kubernetes.io/proxy-body-size: 100M
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 100M
+    nginx.ingress.kubernetes.io/proxy-buffering: <span style="color:#666;font-style:italic">&#34;on&#34;</span>
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: <span style="color:#666;font-style:italic">&#34;300&#34;</span>
+    nginx.ingress.kubernetes.io/proxy-read-timeout: <span style="color:#666;font-style:italic">&#34;300&#34;</span>
+    nginx.ingress.kubernetes.io/proxy-send-timeout: <span style="color:#666;font-style:italic">&#34;300&#34;</span></code></pre></div>
+<p>这里将超时改成了 5m</p>
+
+<h2 id="为节点添加标签">为节点添加标签</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl label node1 <span style="color:#666;font-weight:bold;font-style:italic">test</span>=true</code></pre></div>
+<p>这里添加了 &ldquo;test=true&rdquo; 的标签</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl label node node1 node-role.kubernetes.io/node=<span style="color:#666;font-style:italic">&#34;&#34;</span></code></pre></div>
+<p>添加上述标签可以改变 <code>kubectl get node</code> 时的角色显示</p>
+
+<h2 id="为节点添加污点">为节点添加污点</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl taint node node1 <span style="color:#666;font-weight:bold;font-style:italic">test</span>=<span style="color:#666;font-style:italic">&#34;true&#34;</span>:NoSchedule</code></pre></div>
+<p>为 node1 节点的 &ldquo;test=true&rdquo; 标签添加了不可调度的污点</p>
+
+<h2 id="选择节点部署-pod">选择节点部署 pod</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disktype: ssd
+    kubernetes.io/hostname: node1</code></pre></div>
+<h2 id="init-容器">init 容器</h2>
+
+<p>init 容器在应用程序容器启动前运行，用来包含一些应用镜像中不存在的实用工具或安装脚本。</p>
+
+<ul>
+<li>比如可以用于等待一个 Service 创建成功，通过类似如下 shell 命令：</li>
+</ul>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="font-weight:bold">until</span> nslookup myservice; <span style="font-weight:bold">do</span> <span style="font-weight:bold;font-style:italic">echo</span> waiting <span style="font-weight:bold">for</span> myservice, sleep 10; <span style="font-weight:bold">done</span>;</code></pre></div>
+<ul>
+<li>将 Pod 注册到远程服务器，通过在命令中调用 API，类似如下：</li>
+</ul>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -X POST http://<span style="color:#666;font-weight:bold;font-style:italic">$MANAGEMENT_SERVICE_HOST</span>:<span style="color:#666;font-weight:bold;font-style:italic">$MANAGERMENT_SERVICE_PORT</span>/registr -d <span style="color:#666;font-style:italic">&#39;instance=$(&lt;POD_NAME&gt;)&amp;ip=$(&lt;POD_IP&gt;)&#39;</span></code></pre></div>
+<p><details>
+<summary>pod.yaml</summary></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: [<span style="color:#666;font-style:italic">&#39;sh&#39;</span>, <span style="color:#666;font-style:italic">&#39;-c&#39;</span>, <span style="color:#666;font-style:italic">&#39;echo The app is running! &amp;&amp; sleep 3600&#39;</span>]
+  initContainers:
+  - name: init-myservice
+    image: busybox
+    command: [<span style="color:#666;font-style:italic">&#39;sh&#39;</span>, <span style="color:#666;font-style:italic">&#39;-c&#39;</span>, <span style="color:#666;font-style:italic">&#39;until nslookup myservice; do echo waiting for myservice; sleep 2; done;&#39;</span>]
+  - name: init-mydb
+    image: busybox
+    command: [<span style="color:#666;font-style:italic">&#39;sh&#39;</span>, <span style="color:#666;font-style:italic">&#39;-c&#39;</span>, <span style="color:#666;font-style:italic">&#39;until nslookup mydb; do echo waiting for mydb; sleep 2; done;&#39;</span>]</code></pre></div>
+<p></details></p>
+
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Thu Aug 1, 2019
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/k8s">k8s</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        <li><a class="previous" href="https://www.cheon.site/blog/struct/logstash_to_es/"> Logstash to ES</a></li>
+        
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

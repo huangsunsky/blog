@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ceph on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/ceph/</link>
+    <description>Recent content in ceph on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 23 Jun 2019 16:45:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ceph Ansible</title>
+      <link>https://www.cheon.site/blog/struct/ceph_ansible/</link>
+      <pubDate>Sun, 23 Jun 2019 16:45:52 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/struct/ceph_ansible/</guid>
+      <description>Ceph 介绍 无论是想要为云平台提供 Ceph Object Storage 或 Ceph Block Device 服务，部署一个 Ceph Filesystem 总是从设置每一个 Ceph 节点，网络和 Ceph 存储集群开始。一个 Ceph 存储集群至少需要一个 Ceph Monitor，Ceph Manger，和 Ceph OSD(Object Storage Daemon)。当运行 Ceph 文件系统客户端时也需要 Ceph Metadata Server。
+ Monitors: 一个 Ceph 监视器(ceph-mon) 维护集群状态的映射，包括监视器，管理，OSD 和 CURSH 映射。这些映射是 Ceph 守护进程之间相互协调的关键。监视器还负责管理守护进程和客户端之间的身份验证。为了保证冗余和高可用，至少需要3个监视器。
+ Mangers: 一个 Ceph 管理(ceph-mgr)守护进程负责保持追踪 Ceph 集群运行时指标和当前集群状态，包括存储利用率，当前的性能指标和系统负载。Ceph 管理进程还托管基于 python 的模块来管理和公开 Ceph 集群信息，包括一个基于网页的 Ceph Dashboard 和 REST API。为了保证高可用，至少需要2个管理节点。
+ Ceph OSDs: 一个 Ceph OSD(object storage daemon, ceph-osd)存储数据，处理数据复制、恢复、重新平衡，并通过检查其他 Ceph OSD 进程的心跳来提供一些监控信息给 Ceph 监视器和管理。为了保证冗余和高可用，至少需要3个 Ceph OSDs。</description>
+    </item>
+    
+  </channel>
+</rss>

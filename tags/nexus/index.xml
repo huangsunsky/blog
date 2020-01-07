@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nexus on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/nexus/</link>
+    <description>Recent content in nexus on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 09 Nov 2017 10:47:30 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/nexus/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Maven &amp; Nexus</title>
+      <link>https://www.cheon.site/blog/struct/maven_nexus/</link>
+      <pubDate>Thu, 09 Nov 2017 10:47:30 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/struct/maven_nexus/</guid>
+      <description>maven 配置使用 nexus 私服 修改~/.m2/settings.xml内容如下：
+ mvn config
+&amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt; &amp;lt;settings xmlns=&amp;#34;http://maven.apache.org/SETTINGS/1.0.0&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34; xsi:schemaLocation=&amp;#34;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&amp;#34;&amp;gt; &amp;lt;servers&amp;gt; &amp;lt;server&amp;gt; &amp;lt;id&amp;gt;releases&amp;lt;/id&amp;gt; &amp;lt;username&amp;gt;admin&amp;lt;/username&amp;gt; &amp;lt;password&amp;gt;admin123&amp;lt;/password&amp;gt; &amp;lt;/server&amp;gt; &amp;lt;server&amp;gt; &amp;lt;id&amp;gt;snapshots&amp;lt;/id&amp;gt; &amp;lt;username&amp;gt;admin&amp;lt;/username&amp;gt; &amp;lt;password&amp;gt;admin123&amp;lt;/password&amp;gt; &amp;lt;/server&amp;gt; &amp;lt;server&amp;gt; &amp;lt;id&amp;gt;thirdpart&amp;lt;/id&amp;gt; &amp;lt;username&amp;gt;admin&amp;lt;/username&amp;gt; &amp;lt;password&amp;gt;admin123&amp;lt;/password&amp;gt; &amp;lt;/server&amp;gt; &amp;lt;/servers&amp;gt; &amp;lt;mirrors&amp;gt; &amp;lt;mirror&amp;gt; &amp;lt;id&amp;gt;central&amp;lt;/id&amp;gt; &amp;lt;name&amp;gt;central&amp;lt;/name&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/nexus/content/groups/public/&amp;lt;/url&amp;gt; &amp;lt;mirrorOf&amp;gt;*&amp;lt;/mirrorOf&amp;gt; &amp;lt;/mirror&amp;gt; &amp;lt;/mirrors&amp;gt; &amp;lt;/settings&amp;gt; 
+在项目的 pom.xml 文件中添加如下内容：
+ pom config
+&amp;lt;distributionManagement&amp;gt; &amp;lt;snapshotRepository&amp;gt; &amp;lt;id&amp;gt;snapshots&amp;lt;/id&amp;gt; &amp;lt;name&amp;gt;Snapshot Repository&amp;lt;/name&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/nexus/content/repositories/snapshots/&amp;lt;/url&amp;gt; &amp;lt;/snapshotRepository&amp;gt; &amp;lt;repository&amp;gt; &amp;lt;id&amp;gt;releases&amp;lt;/id&amp;gt; &amp;lt;name&amp;gt;Release Repository&amp;lt;/name&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/nexus/content/repositories/releases/&amp;lt;/url&amp;gt; &amp;lt;/repository&amp;gt; &amp;lt;/distributionManagement&amp;gt; &amp;lt;repositories&amp;gt; &amp;lt;repository&amp;gt; &amp;lt;id&amp;gt;public&amp;lt;/id&amp;gt; &amp;lt;name&amp;gt;Public&amp;lt;/name&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/nexus/content/groups/public&amp;lt;/url&amp;gt; &amp;lt;releases&amp;gt; &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt; &amp;lt;/releases&amp;gt; &amp;lt;snapshots&amp;gt; &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt; &amp;lt;/snapshots&amp;gt; &amp;lt;/repository&amp;gt; &amp;lt;repository&amp;gt; &amp;lt;id&amp;gt;snapshots&amp;lt;/id&amp;gt; &amp;lt;name&amp;gt;Snapshots&amp;lt;/name&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/nexus/content/repositories/snapshots&amp;lt;/url&amp;gt; &amp;lt;releases&amp;gt; &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt; &amp;lt;/releases&amp;gt; &amp;lt;snapshots&amp;gt; &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt; &amp;lt;/snapshots&amp;gt; &amp;lt;/repository&amp;gt; &amp;lt;repository&amp;gt; &amp;lt;id&amp;gt;thirdparty&amp;lt;/id&amp;gt; &amp;lt;name&amp;gt;3rd party&amp;lt;/name&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/nexus/content/repositories/thirdparty/&amp;lt;/url&amp;gt; &amp;lt;releases&amp;gt; &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt; &amp;lt;/releases&amp;gt; &amp;lt;snapshots&amp;gt; &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt; &amp;lt;/snapshots&amp;gt; &amp;lt;/repository&amp;gt; &amp;lt;/repositories&amp;gt; &amp;lt;pluginRepositories&amp;gt; &amp;lt;pluginRepository&amp;gt; &amp;lt;id&amp;gt;public&amp;lt;/id&amp;gt; &amp;lt;name&amp;gt;Plugin Repository&amp;lt;/name&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/nexus/content/groups/public&amp;lt;/url&amp;gt; &amp;lt;layout&amp;gt;default&amp;lt;/layout&amp;gt; &amp;lt;snapshots&amp;gt; &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt; &amp;lt;/snapshots&amp;gt; &amp;lt;/pluginRepository&amp;gt; &amp;lt;/pluginRepositories&amp;gt;</description>
+    </item>
+    
+  </channel>
+</rss>

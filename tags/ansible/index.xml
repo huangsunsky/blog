@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ansible on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/ansible/</link>
+    <description>Recent content in ansible on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 25 May 2018 11:06:47 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/ansible/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ansible Variables</title>
+      <link>https://www.cheon.site/blog/struct/ansible_variables/</link>
+      <pubDate>Fri, 25 May 2018 11:06:47 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/struct/ansible_variables/</guid>
+      <description>ansible 变量 ansible 变量以[A-Za-z]开头，可以包含下划线_和数字[0-9]，标准是全部使用小写字母。在清单(inventory)文件里，变量使用=赋值，如：
+foo=bar 在剧本(playbook)或变量文件里，变量用:赋值，如：
+foo: bar Playbook Variables 变量可以在使用ansible-playbook时通过命令行参数--extra-vars选项传递：
+ansible-playbook example.yml --extra-vars &amp;#34;foo=bar&amp;#34; 也可以在参数中传递json，yaml格式的数据，甚至是json和yaml文件，就像--extra-vars &amp;quot;@even_more_vars.json&amp;quot;或者--extra-vars &amp;quot;@even_more_vars.yml&amp;quot;，但这种方式不建议使用。
+变量可以直接在playbook中的vars部分定义：
+--- - hosts: example vars: foo: bar tasks: # Prints &amp;#34;Variable &amp;#39;foo&amp;#39; is set to bar&amp;#34;. - debug: msg=&amp;#34;Variable &amp;#39;foo&amp;#39; is set to {{ foo }}&amp;#34; 变量也可以在单独的文件中定义，然后在playbook中通过vars_files引用：
+# Main playbook file. - hosts: example vars_files: - vars.yml tasks: - debug: msg=&amp;#34;Variable &amp;#39;foo&amp;#39; is set to {{ foo }}&amp;#34; 和playbook同目录下的vars.yml：
+# Variables file &amp;#39;vars.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ssh on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/ssh/</link>
+    <description>Recent content in ssh on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 14 Jun 2019 17:22:12 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/ssh/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ssh Config</title>
+      <link>https://www.cheon.site/blog/solved/ssh_config/</link>
+      <pubDate>Fri, 14 Jun 2019 17:22:12 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/solved/ssh_config/</guid>
+      <description>ssh 错误排查 新拿到的6台服务器，通过jumpserver用密钥登录到其中一台服务器，用 ssh 以账户密码的方式登录到其中另外一台服务器时遇见如下错误:
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic). 测试登录另外一台服务器，发现可以正常登录；测试登录自己，报相同的错误。可以判断应该是 ssh 服务端配置有问题。
+经过排查，发现应该是服务端没有开启密码认证，修改/etc/ssh/sshd_config，修改为如下配置，将no替换为yes:
+PasswordAuthentication yes 保存配置重新启动 sshd 服务:
+systemctl restart sshd 再次测试发现已经可以登录了</description>
+    </item>
+    
+  </channel>
+</rss>

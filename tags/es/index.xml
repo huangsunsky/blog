@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>es on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/es/</link>
+    <description>Recent content in es on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 04 Jul 2019 09:26:33 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/es/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Logstash to ES</title>
+      <link>https://www.cheon.site/blog/struct/logstash_to_es/</link>
+      <pubDate>Thu, 04 Jul 2019 09:26:33 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/struct/logstash_to_es/</guid>
+      <description>logstash 配置日志发送 ES 日志收集的架构如下所示:
+┌────────────┐ │Java logback│\ └────────────┘ \ ┌─────┐ ┌────────┐ ┌──────┐ ┌────────┐ │kafka│ ───&amp;gt; │logstash│ ───&amp;gt; │ ES │ ───&amp;gt; │ kibana │ └─────┘ └────────┘ └──────┘ └────────┘ ┌────────────┐ / │Java logback│/ └────────────┘ java 应用日志通过 logback 发送给 kafka，logstash 从 kafka 消费日志，并将日志转发给 ES。一开始一个应用一个 kafka topic，logstash 消费了之后根据 topic 来确定 ES 的索引。
+logback 的配置:
+ logback.xml
+&amp;lt;appender name=&amp;#34;KAFKA&amp;#34; class=&amp;#34;com.github.danielwegener.logback.kafka.KafkaAppender&amp;#34;&amp;gt; &amp;lt;encoder class=&amp;#34;ch.qos.logback.classic.encoder.PatternLayoutEncoder&amp;#34; charset=&amp;#34;UTF-8&amp;#34; &amp;gt; &amp;lt;pattern&amp;gt;%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n&amp;lt;/pattern&amp;gt; &amp;lt;/encoder&amp;gt; &amp;lt;topic&amp;gt;spring-boot-demo&amp;lt;/topic&amp;gt; &amp;lt;keyingStrategy class=&amp;#34;com.</description>
+    </item>
+    
+    <item>
+      <title>Es Clean Indices</title>
+      <link>https://www.cheon.site/blog/shell/es_clean_indices/</link>
+      <pubDate>Wed, 12 Jun 2019 16:00:30 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/shell/es_clean_indices/</guid>
+      <description>ES 清理索引 使用阿里云的 ES 服务存储应用的日志，随着业务的增长和 ES 的资源限制，索引过多会引起 ES 的崩溃。 日志的采集是通过 logback 发送到 kafka，再用 logstash 消费 kafka 并转发给 ES。logstash 配置了%{[@metadata][kafka][topic]}-%{+YYYY-MM-dd}作为 ES 的索引。 经过讨论准备只将日志存储一个月，需要定时去清理索引，防止索引过多。
+获取索引 首先要做的是获取当前的索引，通过查阅 ES 的 API 可知，可以用 /_cat/indices 接口来获取所有索引:
+curl -X POST -s &amp;#34;http://es.example.site/_cat/indices&amp;#34; 可以看到如下结果:
+green open test-app1-prod-log-2019-06-11 28NbwQbZTIaGPgb0S5Wkuw 5 1 189385 0 179.7mb 89.9mb green open test-app1-prod-log-2019-06-10 0EiQBNhZTnGZqUZ92J9UEg 5 1 189385 0 179.7mb 93.3mb green open test-app2-prod-log-2019-06-08 N_Th5gahSiu3kiycF26Q_A 5 1 2133105 0 4.5gb 2.2gb 需要将结果过滤一下，只保留 %{[@metadata][kafka][topic]} 的信息:</description>
+    </item>
+    
+  </channel>
+</rss>

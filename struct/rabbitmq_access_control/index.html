@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/struct/">
+    
+    struct
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/struct/rabbitmq_access_control/">
+    
+    Rabbitmq Access Control
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>Rabbitmq Access Control</h1>
+  <time>Last updated Fri Jun 14, 2019</time>
+  <div>
+      <article id="content">
+          
+
+<h1 id="rabbitmq-权限控制">Rabbitmq 权限控制</h1>
+
+<p>在rabbitmq中，身份验证和授权是分开的。身份验证用于判断用户是谁，授权用于确定用户能做什么和不能做什么。</p>
+
+<h2 id="默认虚拟主机和用户">默认虚拟主机和用户</h2>
+
+<p>当服务第一次启动或者检测到数据库梅雨初始化或已经被删除，rabbitmq会初始化一个新的数据库，拥有如下资源：</p>
+
+<ul>
+<li>一个虚拟主机<code>/</code></li>
+<li>一个用户名和密码都为<code>guest</code>的用户，拥有<code>/</code>虚拟主机的所有权限</li>
+</ul>
+
+<p>建议是删除默认用户或者修改默认用户的密码。<code>guest</code>用户默认情况只能通过localhost连接，无法通过远程连接。这可以通过配置文件修改，设置<code>loopback_users.guest = false</code>即可。</p>
+
+<h2 id="权限工作方式">权限工作方式</h2>
+
+<p>rabbitmq的权限控制主要分为两层，第一层是虚拟主机的权限，第二层是资源的权限。</p>
+
+<h2 id="虚拟主机-virtual-host">虚拟主机(Virtual Host)</h2>
+
+<p>当客户端连接到服务器，它会指定一个要操作的虚拟主机，第一层权限控制被启用，服务器会检查用户对该虚拟主机是否有权限，没有权限连接会被拒绝。</p>
+
+<p>示例：</p>
+
+<p>首先创建一个用户：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rabbitmqctl add_user cheon 123</code></pre></div>
+<p>这里创建了一个用户cheon，密码为123（如果rabbitmq是集群，那么在集群中一个节点上创建了用户，虚拟主机等，在其他节点上也都会存在。）。刚创建的用户是没有任何权限的。可以确认一下用户的权限：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@rabbitmq-node1:/# rabbitmqctl list_user_permissions cheon
+Listing permissions <span style="font-weight:bold">for</span> user <span style="color:#666;font-style:italic">&#34;cheon&#34;</span> ...
+
+root@rabbitmq-node1:/# rabbitmqctl list_user_permissions guest
+Listing permissions <span style="font-weight:bold">for</span> user <span style="color:#666;font-style:italic">&#34;guest&#34;</span> ...
+/	.*	.*	.*</code></pre></div>
+<p>可以看到新用户cheon没有任何权限，guest用户拥有虚拟主机<code>/</code>的全部权限。</p>
+
+<p>编写一个简单的脚本，通过用户cheon连接<code>/</code>虚拟主机，发送Hello World：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#888;font-style:italic">#!/usr/bin/env python</span>
+
+<span style="font-weight:bold">import</span> <span style="color:#666;font-weight:bold;font-style:italic">pika</span>
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(<span style="color:#666;font-style:italic">&#39;172.17.0.6&#39;</span>, 5672, <span style="color:#666;font-style:italic">&#34;/&#34;</span>, credentials=pika.PlainCredentials(<span style="color:#666;font-style:italic">&#39;cheon&#39;</span>, <span style="color:#666;font-style:italic">&#39;123&#39;</span>)))
+channel = connection.channel()
+
+channel.queue_declare(queue=<span style="color:#666;font-style:italic">&#39;hello&#39;</span>)
+
+channel.basic_publish(
+        exchange=<span style="color:#666;font-style:italic">&#39;&#39;</span>,
+        routing_key=<span style="color:#666;font-style:italic">&#39;hello&#39;</span>,
+        body=<span style="color:#666;font-style:italic">&#39;Hello World!&#39;</span>
+        )
+
+<span style="font-weight:bold">print</span>(<span style="color:#666;font-style:italic">&#34; [x] Sent &#39;Helllo World!&#39;&#34;</span>)
+
+connection.close()</code></pre></div>
+<p>执行代码：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">=&gt; ./send.py 
+Traceback (most recent call last):
+  File <span style="color:#666;font-style:italic">&#34;./send.py&#34;</span>, line 5, in &lt;module&gt;
+    <span style="color:#666;font-weight:bold;font-style:italic">connection</span> = pika.BlockingConnection(pika.ConnectionParameters(<span style="color:#666;font-style:italic">&#39;172.17.0.6&#39;</span>, 5672, <span style="color:#666;font-style:italic">&#34;/&#34;</span>, <span style="color:#666;font-weight:bold;font-style:italic">credentials</span>=pika.PlainCredentials(<span style="color:#666;font-style:italic">&#39;cheon&#39;</span>, <span style="color:#666;font-style:italic">&#39;123&#39;</span>)))
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/blocking_connection.py&#34;</span>, line 377, in __init__
+    self._process_io_for_connection_setup()
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/blocking_connection.py&#34;</span>, line 417, in _process_io_for_connection_setup
+    self._open_error_result.is_ready)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/blocking_connection.py&#34;</span>, line 469, in _flush_output
+    raise maybe_exception
+pika.exceptions.ProbableAccessDeniedError: (530, <span style="color:#666;font-style:italic">&#34;NOT_ALLOWED - access to vhost &#39;/&#39; refused for user &#39;cheon&#39;&#34;</span>)</code></pre></div>
+<p>可以发现报错是连接不被允许。</p>
+
+<p>现在新建一个虚拟主机<code>myapp</code>：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rabbitmqctl add_vhost myapp</code></pre></div>
+<p>然后为cheon添加对<code>myapp</code>的所有权限（要注意的是虽然guest是管理员帐号，但默认也没有连接新建虚拟主机的权限）：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rabbitmqctl set_permissions -p myapp cheon <span style="color:#666;font-style:italic">&#34;.*&#34;</span> <span style="color:#666;font-style:italic">&#34;.*&#34;</span> <span style="color:#666;font-style:italic">&#34;.*&#34;</span></code></pre></div>
+<p>修改发送代码连接的虚拟主机：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">connection = pika.BlockingConnection(pika.ConnectionParameters(<span style="color:#666;font-style:italic">&#39;172.17.0.6&#39;</span>, 5672, <span style="color:#666;font-style:italic">&#34;myapp&#34;</span> credentials=pika.PlainCredentials(<span style="color:#666;font-style:italic">&#39;cheon&#39;</span>, <span style="color:#666;font-style:italic">&#39;123&#39;</span>)))</code></pre></div>
+<p>再次运行：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">=&gt; ./send.py 
+ [x] Sent <span style="color:#666;font-style:italic">&#39;Helllo World!&#39;</span></code></pre></div>
+<p>可以发现连接成功，消息也发送成功。</p>
+
+<h2 id="资源">资源</h2>
+
+<p>资源(Resources)例如交换和队列，在特定的虚拟主机中是命名实体。相同的名字在不同的虚拟主机中也代表了不同的资源。当对资源进行操作时，第二层的权限控制被启用。rabbitmq将资源分为配置(configure)，写(write)，读(read)权限。配置操作创建，销毁或修改资源；写操作向资源注入消息；读操作从资源获取消息。</p>
+
+<p>对资源的权限用三个正则表达式表示，每一个代表对应虚拟主机的配置，写和读。用户被授予对所有和正则表达式匹配的资源的权限。为了方便，rabbitmq映射AMQP的默认交换的空名字为<code>amq.default</code>。</p>
+
+<p>正则表达式<code>^$</code>匹配空字符串，不允许用户对资源进行任何操作。标准的AMQP资源名字以<code>amq</code>为前缀。服务器生成的资源名字以<code>amq.gen</code>为前缀。例如，<code>^(amq\.gen.*|amq\.default)$</code>给予用户服务器生成的资源和默认交换的权限。空字符串<code>''</code>是<code>^$</code>同义词禁止用户权限。</p>
+
+<p>示例：</p>
+
+<p>先为<code>guest</code>用户添加能连接<code>myapp</code>虚拟主机的权限，但禁止它操作资源：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@rabbitmq-node2:/# rabbitmqctl set_permissions -p myapp guest <span style="color:#666;font-style:italic">&#34;&#34;</span> <span style="color:#666;font-style:italic">&#34;&#34;</span> <span style="color:#666;font-style:italic">&#34;&#34;</span>
+Setting permissions <span style="font-weight:bold">for</span> user <span style="color:#666;font-style:italic">&#34;guest&#34;</span> in vhost <span style="color:#666;font-style:italic">&#34;myapp&#34;</span> ...</code></pre></div>
+<p>修改代码以<code>guest</code>用户来发送消息：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">connection = pika.BlockingConnection(pika.ConnectionParameters(<span style="color:#666;font-style:italic">&#39;172.17.0.6&#39;</span>, 5672, <span style="color:#666;font-style:italic">&#34;myapp&#34;</span>, credentials=pika.PlainCredentials(<span style="color:#666;font-style:italic">&#39;guest&#39;</span>, <span style="color:#666;font-style:italic">&#39;guest&#39;</span>)))</code></pre></div>
+<p>执行代码：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">=&gt; ./send.py 
+Traceback (most recent call last):
+  File <span style="color:#666;font-style:italic">&#34;./send.py&#34;</span>, line 8, in &lt;module&gt;
+    channel.queue_declare(<span style="color:#666;font-weight:bold;font-style:italic">queue</span>=<span style="color:#666;font-style:italic">&#39;hello&#39;</span>)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/blocking_connection.py&#34;</span>, line 2468, in queue_declare
+    self._flush_output(declare_ok_result.is_ready)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/blocking_connection.py&#34;</span>, line 1292, in _flush_output
+    *waiters)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/blocking_connection.py&#34;</span>, line 458, in _flush_output
+    self._impl.ioloop.poll()
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/select_connection.py&#34;</span>, line 495, in poll
+    self._poller.poll()
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/select_connection.py&#34;</span>, line 1114, in poll
+    self._dispatch_fd_events(fd_event_map)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/select_connection.py&#34;</span>, line 831, in _dispatch_fd_events
+    handler(fileno, events)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/base_connection.py&#34;</span>, line 410, in _handle_events
+    self._handle_read()
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/base_connection.py&#34;</span>, line 464, in _handle_read
+    self._on_data_available(data)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/connection.py&#34;</span>, line 2021, in _on_data_available
+    self._process_frame(frame_value)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/connection.py&#34;</span>, line 2142, in _process_frame
+    <span style="font-weight:bold">if</span> self._process_callbacks(frame_value):
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/connection.py&#34;</span>, line 2123, in _process_callbacks
+    frame_value)  <span style="color:#888;font-style:italic"># Args</span>
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/callback.py&#34;</span>, line 60, in wrapper
+    <span style="font-weight:bold">return</span> <span style="font-weight:bold">function</span>(*tuple(args), **kwargs)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/callback.py&#34;</span>, line 92, in wrapper
+    <span style="font-weight:bold">return</span> <span style="font-weight:bold">function</span>(*args, **kwargs)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/callback.py&#34;</span>, line 236, in process
+    callback(*args, **keywords)
+  File <span style="color:#666;font-style:italic">&#34;/home/cheon/Docker/python/site-packages/pika/adapters/blocking_connection.py&#34;</span>, line 1358, in _on_channel_closed
+    method.reply_text)
+pika.exceptions.ChannelClosed: (403, <span style="color:#666;font-style:italic">&#34;ACCESS_REFUSED - access to queue &#39;hello&#39; in vhost &#39;myapp&#39; refused for user &#39;guest&#39;&#34;</span>)</code></pre></div>
+<p>提示没有操作<code>hello</code>队列的权限。现在修改guest的权限，让guest有配置和写的权限：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rabbitmqctl set_permissions -p myapp guest <span style="color:#666;font-style:italic">&#34;.*&#34;</span> <span style="color:#666;font-style:italic">&#34;.*&#34;</span> <span style="color:#666;font-style:italic">&#34;&#34;</span></code></pre></div>
+<p>再次执行：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">=&gt; ./send.py 
+ [x] Sent <span style="color:#666;font-style:italic">&#39;Helllo World!&#39;</span></code></pre></div>
+<p>可以看到发送成功了，再运行消费者去消费：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#888;font-style:italic">#!/usr/bin/env python</span>
+
+<span style="font-weight:bold">import</span> <span style="color:#666;font-weight:bold;font-style:italic">pika</span>
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(<span style="color:#666;font-style:italic">&#39;172.17.0.6&#39;</span>, 5672, <span style="color:#666;font-style:italic">&#34;myapp&#34;</span>, credentials=pika.PlainCredentials(<span style="color:#666;font-style:italic">&#39;cheon&#39;</span>, <span style="color:#666;font-style:italic">&#39;123&#39;</span>)))
+channel = connection.channel()
+
+channel.queue_declare(queue=<span style="color:#666;font-style:italic">&#39;hello&#39;</span>)
+
+<span style="font-weight:bold">def</span> <span style="color:#666;font-weight:bold;font-style:italic">callback</span>(ch, method, properties, body):
+    <span style="font-weight:bold">print</span>(<span style="color:#666;font-style:italic">&#34; [x] Received </span><span style="color:#666;font-style:italic">%r</span><span style="color:#666;font-style:italic">&#34;</span> % body)
+
+channel.basic_consume(
+        callback,
+        queue=<span style="color:#666;font-style:italic">&#39;hello&#39;</span>,
+        no_ack=<span style="font-weight:bold;font-style:italic">True</span>
+        )
+
+<span style="font-weight:bold">print</span>(<span style="color:#666;font-style:italic">&#39; [*] Waiting for message. To exit press CTRL+C&#39;</span>)
+channel.start_consuming()</code></pre></div>
+<p>这里的消费者用的是另一个用户cheon，因为他有读的权限，而guest没有读的权限，因此无法消费。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">=&gt; ./receive.py 
+ [*] Waiting <span style="font-weight:bold">for</span> message. To <span style="font-weight:bold;font-style:italic">exit</span> press CTRL+C
+ [x] Received b<span style="color:#666;font-style:italic">&#39;Hello World!&#39;</span></code></pre></div>
+<p>可以看到消费成功。</p>
+
+<p>如果我们把guest的权限设置成<code>&quot;hello&quot; &quot;hello&quot; &quot;&quot;</code>，意味着guest对名为<code>hello</code>的交换和队列等资源有配置和写的权限，这样执行代码发送端不会报错，但用消费者去消费是收不到消息的，因为代码里用到了myapp默认的交换<code>''</code>，但guest没有设置权限，因此会发送失败。在权限控制的时候要注意这一点。</p>
+
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Mon Oct 30, 2017
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/rabbitmq">rabbitmq</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        <li><a class="previous" href="https://www.cheon.site/blog/struct/rabbitmq_topic/"> Rabbitmq Topic</a></li>
+        
+        
+        <li><a class="next" href="https://www.cheon.site/blog/struct/etcd_and_flannel/"> Etcd &amp; Flannel</a></li>
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

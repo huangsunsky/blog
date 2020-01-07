@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>monitor on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/monitor/</link>
+    <description>Recent content in monitor on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 05 Jan 2018 10:14:58 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/monitor/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Fluentd Config</title>
+      <link>https://www.cheon.site/blog/struct/fluentd_config/</link>
+      <pubDate>Fri, 05 Jan 2018 10:14:58 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/struct/fluentd_config/</guid>
+      <description>命令列表 Fluentd配置文件由以下配置文件组成：
+ source命令 指明数据输入源 match命令 指明数据输出源 filter命令 指明事件处理的管道 system命令 指明系统级别配置 label命令 为输出分组并过滤内部路由 include命令 包含其他文件  命令详解  source: 数据的来源
+Fluentd的输入源通过source命令选择和配置想要的输入插件来启用。Fluentd的标准输入插件包括http和forward。http使得Fluentd转变为一个HTTP终端用于接收到来的HTTP信息，而forward将fluentd转变为一个TCP终端用于接收TCP包。当然，它们可以被同时启用。
+# Receive events from 24224/tcp # This is used by log forwarding and the fluent-cat command &amp;lt;source&amp;gt; @type forward port 24224 &amp;lt;/source&amp;gt; # http://this.host:9880/myapp.access?json={&amp;#34;event&amp;#34;:&amp;#34;data&amp;#34;} &amp;lt;source&amp;gt; @type http port 9880 &amp;lt;/source&amp;gt; 每一个source命令必须包含一个type参数。type参数指定使用哪一个输入插件。
+ match: 告诉fluentd做什么
+match命令寻找匹配标签的事件并且处理它们。match命令最常见的用法是将事件输出到其他系统（由于这个原因，这些插件被称为”输出插件“）。Fluentd的标准输出插件包括file和forward。
+# Receive events from 24224/tcp # This is used by log forwarding and the fluent-cat command &amp;lt;source&amp;gt; @type forward port 24224 &amp;lt;/source&amp;gt; # http://this.</description>
+    </item>
+    
+  </channel>
+</rss>

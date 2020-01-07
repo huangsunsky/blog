@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>aop on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/aop/</link>
+    <description>Recent content in aop on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 25 Apr 2019 17:16:15 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/aop/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Skywalking Deploy</title>
+      <link>https://www.cheon.site/blog/struct/skywalking_deploy/</link>
+      <pubDate>Thu, 25 Apr 2019 17:16:15 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/struct/skywalking_deploy/</guid>
+      <description>skywalking 部署 skywalking 是一个国产开源的调用链监控工具，可用于分析请求中哪些操作比较慢。官方提供了 k8s 的部署配置，但这个配置里的镜像是不对的，具体版本对应的镜像可以在Dockerhub上找到。如果想要更换版本，最好把 ES 中的索引先删除，否则可能会导致应用报错。
+架构说明  elasticsearch: 用于存储 skywalking 数据，这里使用的是腾讯云的 ES 服务，因此无需搭建 skywalking-oap-server: skywalking 后端 ui: 默认 ui 界面 rocketbot-ui: skywalking 的另一个官方前端界面，没有现成的镜像，需要自己构建  部署 将官方的部署文件克隆到本地，将 oap， ui 的镜像换成对应的版本镜像。修改 oap 配置中的 ES 地址：
+storage: elasticsearch: clusterNodes: elasticsearch:9200 先创建命名空间：
+kubectl create ns skywalking 接着部署 oap 后端：
+kubectl apply -f oap/ 再部署前端：
+kubectl apply -f ui/ 为了集群外部访问，可以为前端配置一个域名或者在 service 中添加 externalIPs。
+apiVersion: extensions/v1beta1 kind: Ingress metadata: generation: 1 name: ui namespace: skywalking spec: rules: - host: skywalking.</description>
+    </item>
+    
+  </channel>
+</rss>

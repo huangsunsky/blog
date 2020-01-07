@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/struct/">
+    
+    struct
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/struct/rabbitmq_routing/">
+    
+    Rabbitmq Routing
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>Rabbitmq Routing</h1>
+  <time>Last updated Fri Jun 14, 2019</time>
+  <div>
+      <article id="content">
+          
+
+<h1 id="rabbitmq-路由">Rabbitmq 路由</h1>
+
+<p>这里我们将为日志系统增加一个特性&ndash;只订阅一部分信息。例如，我们可以将错误信息存入日志文件，将其他信息打印出来。</p>
+
+<h2 id="绑定-bindings">绑定（Bindings）</h2>
+
+<p>在日志系统中我们已经使用过绑定，像这样调用代码：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">channel.queue_bind(
+    exchange=exchange_name,
+    queue=queue_name
+)</code></pre></div>
+<p>一个绑定是交换和队列之间的关系，可以简单地理解为这个队列只对这个交换的信息感兴趣。绑定可以指定额外的<code>routing_key</code>参数。为了避免和一个<code>basic_publish</code>参数混淆，我们称它<code>binding key</code>，可以通过一下方式创建一个带有key的绑定：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">channel.queue_bind(
+    exchange=exchange_name,
+    queue=queue_name,
+    routing_key=<span style="color:#666;font-style:italic">&#39;black&#39;</span>
+)</code></pre></div>
+<p><code>binding key</code>的含义依赖于交换的类型。<code>fanout</code>交换类型会直接忽略这个值。</p>
+
+<h2 id="direct-exchange">Direct exchange</h2>
+
+<p>我们之前的日志系统使用<code>fanout</code>交换类型，直接将信息广播给所有消费者。现在我们想要扩展它允许根据根据级别来过滤。例如，将错误级别的日志存入磁盘，将普通的日志直接输出而不浪费磁盘空间。为了达到这个目的，这里将使用<code>direct</code>交换。<code>direct</code>交换的路由算法也比较简单，一个消息只推送到<code>binding key</code>和<code>routing key</code>匹配的队列，举例如下图：</p>
+
+<p><img src="https://www.cheon.site/blog/struct/images/rabbitmq_routing_img1.png" alt="direct routing" /></p>
+
+<p>在上述例子中可以看到<code>direct</code>交换<code>x</code>有两个与之绑定的队列。第一个队列的<code>binding key</code>是<code>orange</code>，第二个队列有两个<code>binding key</code>，分别是<code>black</code>和<code>green</code>。通过这个配置，一个带有<code>orage</code>的<code>routing key</code>的信息推送到交换后会被路由到队列<code>Q1</code>；一个带有<code>black</code>或者<code>green</code>的<code>routing key</code>的信息推送到交换后会被路由到队列<code>Q2</code>，其他的信息会被丢弃。</p>
+
+<h2 id="多绑定-muliple-bindings">多绑定（Muliple bindings）</h2>
+
+<p><img src="https://www.cheon.site/blog/struct/images/rabbitmq_routing_img2.png" alt="multiple bindings" /></p>
+
+<p>用相同的<code>binding key</code>绑定多个队列完全是可行的。在我们的例子中可以在<code>x</code>和<code>Q1</code>之间添加一个名为<code>black</code>的<code>binding key</code>，这样的话，<code>direct</code>交换将会表现得像<code>fanout</code>并且会将信息广播到所有匹配的队列。一个带有<code>black</code>的<code>routing key</code>的信息会递送到<code>Q1</code>和<code>Q2</code>队列。</p>
+
+<h2 id="发送日志">发送日志</h2>
+
+<p>我们将使用这个模型来构建日志系统，我们将会发送信息到<code>direct</code>交换，我们将会以日志的级别作为<code>routing key</code>。首先创建交换：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">channel.exchange_declare(
+    exchange=<span style="color:#666;font-style:italic">&#39;direct_logs&#39;</span>,
+    exchange_type=<span style="color:#666;font-style:italic">&#39;direct&#39;</span>
+    )</code></pre></div>
+<p>然后发送消息：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">channel.basic_publish(
+    exchange=<span style="color:#666;font-style:italic">&#39;direct_logs&#39;</span>,
+    routing_key=serverity,
+    body=message
+)</code></pre></div>
+<p>为了简化程序，我们假设日志级别只有<code>info</code>，<code>warning</code>，<code>error</code>三种情况。</p>
+
+<h2 id="订阅">订阅</h2>
+
+<p>我们将为每一个需要的日志级别创建一个新的绑定：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">result = channel.queue_declare(exclusive=<span style="font-weight:bold;font-style:italic">True</span>)
+queue_name = result.method.queue
+
+<span style="font-weight:bold">for</span> severity <span style="font-weight:bold">in</span> severities:
+    channel.queue_bind(
+        exchange=<span style="color:#666;font-style:italic">&#39;direct_logs&#39;</span>,
+        queue=queue_name,
+        routing_key=severity
+        )</code></pre></div>
+<h2 id="最终结果">最终结果</h2>
+
+<p><img src="https://www.cheon.site/blog/struct/images/rabbitmq_routing_img3.png" alt="multiple bindings" /></p>
+
+<p><code>emit_log_direct.py</code>：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#888;font-style:italic">#!/usr/bin/env python</span>
+
+<span style="font-weight:bold">import</span> <span style="color:#666;font-weight:bold;font-style:italic">pika</span>
+<span style="font-weight:bold">import</span> <span style="color:#666;font-weight:bold;font-style:italic">sys</span>
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(<span style="color:#666;font-style:italic">&#39;172.17.0.6&#39;</span>, 5672, credentials=pika.PlainCredentials(<span style="color:#666;font-style:italic">&#39;guest&#39;</span>, <span style="color:#666;font-style:italic">&#39;guest&#39;</span>)))
+channel = connection.channel()
+
+channel.exchange_declare(
+        exchange=<span style="color:#666;font-style:italic">&#39;direct_logs&#39;</span>,
+        exchange_type=<span style="color:#666;font-style:italic">&#39;direct&#39;</span>
+        )
+
+severity = sys.argv[1] <span style="font-weight:bold">if</span> <span style="font-weight:bold;font-style:italic">len</span>(sys.argv) &gt; 2 <span style="font-weight:bold">else</span> <span style="color:#666;font-style:italic">&#39;info&#39;</span>
+message = <span style="color:#666;font-style:italic">&#39; &#39;</span>.join(sys.argv[2:]) <span style="font-weight:bold">or</span> <span style="color:#666;font-style:italic">&#39;Hello World!&#39;</span>
+channel.basic_publish(
+        exchange=<span style="color:#666;font-style:italic">&#39;direct_logs&#39;</span>,
+        routing_key=severity,
+        body=message
+        )
+<span style="font-weight:bold">print</span>(<span style="color:#666;font-style:italic">&#34; [x] Sent </span><span style="color:#666;font-style:italic">%r</span><span style="color:#666;font-style:italic">:</span><span style="color:#666;font-style:italic">%r</span><span style="color:#666;font-style:italic">&#34;</span> % (severity, message))
+connection.close()</code></pre></div>
+<p><code>receive_logs_direct.py</code>：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#888;font-style:italic">#!/usr/bin/env python</span>
+
+<span style="font-weight:bold">import</span> <span style="color:#666;font-weight:bold;font-style:italic">pika</span>
+<span style="font-weight:bold">import</span> <span style="color:#666;font-weight:bold;font-style:italic">sys</span>
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(<span style="color:#666;font-style:italic">&#39;172.17.0.6&#39;</span>, 5672, credentials=pika.PlainCredentials(<span style="color:#666;font-style:italic">&#39;guest&#39;</span>, <span style="color:#666;font-style:italic">&#39;guest&#39;</span>)))
+channel = connection.channel()
+
+channel.exchange_declare(
+        exchange=<span style="color:#666;font-style:italic">&#39;direct_logs&#39;</span>,
+        exchange_type=<span style="color:#666;font-style:italic">&#39;direct&#39;</span>
+        )
+
+result = channel.queue_declare(exclusive=<span style="font-weight:bold;font-style:italic">True</span>)
+queue_name = result.method.queue
+
+severities = sys.argv[1:]
+<span style="font-weight:bold">if</span> <span style="font-weight:bold">not</span> severities:
+    sys.stderr.write(<span style="color:#666;font-style:italic">&#34;Usage: </span><span style="color:#666;font-style:italic">%s</span><span style="color:#666;font-style:italic"> [info] [warning] [error]</span><span style="color:#666;font-style:italic">\n</span><span style="color:#666;font-style:italic">&#34;</span> % sys.argv[0])
+    sys.<span style="font-weight:bold;font-style:italic">exit</span>(1)
+
+<span style="font-weight:bold">for</span> severity <span style="font-weight:bold">in</span> severities:
+    channel.queue_bind(
+            exchange=<span style="color:#666;font-style:italic">&#39;direct_logs&#39;</span>,
+            queue=queue_name,
+            routing_key=severity
+            )
+
+<span style="font-weight:bold">print</span>(<span style="color:#666;font-style:italic">&#39; [*] Waiting for logs. To exit press CTRL+C&#39;</span>)
+
+<span style="font-weight:bold">def</span> <span style="color:#666;font-weight:bold;font-style:italic">callback</span>(ch, method, properties, body):
+    <span style="font-weight:bold">print</span>(<span style="color:#666;font-style:italic">&#34; [x] </span><span style="color:#666;font-style:italic">%r</span><span style="color:#666;font-style:italic">:</span><span style="color:#666;font-style:italic">%r</span><span style="color:#666;font-style:italic">&#34;</span> % (method.routing_key, body))
+
+channel.basic_consume(
+        callback,
+        queue=queue_name,
+        no_ack=<span style="font-weight:bold;font-style:italic">True</span>
+        )
+
+channel.start_consuming()</code></pre></div>
+<p>如果只想要保存<code>warning</code>和<code>error</code>的日志信息到文件中，只需运行：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./receive_logs_direct.py warning error &gt; logs_from_rabbit.log</code></pre></div>
+<p>发送<code>error</code>级别的日志：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./emit_log_direct.py error <span style="color:#666;font-style:italic">&#34;Run. Run. Or it will explode&#34;</span></code></pre></div>
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Sat Oct 28, 2017
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/rabbitmq">rabbitmq</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        <li><a class="previous" href="https://www.cheon.site/blog/struct/rabbitmq_publish_subscribe/"> Rabbitmq Publish Subscribe</a></li>
+        
+        
+        <li><a class="next" href="https://www.cheon.site/blog/struct/rabbitmq_topic/"> Rabbitmq Topic</a></li>
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

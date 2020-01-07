@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/shell/">
+    
+    shell
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/shell/interesting_shell_commands/">
+    
+    Interesting Shell Commands
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>Interesting Shell Commands</h1>
+  <time>Last updated Wed Oct 30, 2019</time>
+  <div>
+      <article id="content">
+          
+
+<h1 id="一些有意思的shell命令">一些有意思的shell命令</h1>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ <span style="font-weight:bold;font-style:italic">printf</span> <span style="color:#666;font-style:italic">&#34;%x&#34;</span> <span style="color:#666;font-style:italic">\&#39;</span>$
+$ <span style="font-weight:bold;font-style:italic">printf</span> <span style="color:#666;font-style:italic">\\</span>x2F</code></pre></div>
+<p>将字符转化为16进制(%x), 十进制(%d)&hellip;
+第二个命令将16进制转化为字符</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ python -m SimpleHTTPServer
+$ python -m http.server</code></pre></div>
+<p>使用python来建立一个简易的web service用于文件传输，第一个时python2的写法，后一个是python3的写法，默认端口为8000，可以在后面直接加端口指定端口</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ nc -l localhost -p 1016
+$ nc localhost 1016
+$ nc -lu localhost -p 8125
+$ nc -u localhost 8125</code></pre></div>
+<p><code>gnu-netcat</code>软件包，使用<code>nc</code>命令监听1016端口，然后再用<code>nc</code>可以发送数据，这可以用于文件传输，做简易的聊天工具</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -OL https://github.com/cmderdev/cmder/releases/download/v1.3.2/cmder.zip
+curl -Ss <span style="color:#666;font-style:italic">&#34;https://store.docker.com/api/content/v1/repositories/public/library/</span><span style="color:#666;font-weight:bold;font-style:italic">$@</span><span style="color:#666;font-style:italic">/tags?page_size=25&amp;page=1&#34;</span> | jq <span style="color:#666;font-style:italic">&#39;.&#34;results&#34;[][&#34;name&#34;]&#39;</span> | sort -r
+curl -X POST -H <span style="color:#666;font-style:italic">&#34;Content-Type: application/json&#34;</span> -H <span style="color:#666;font-style:italic">&#34;Authorization: Basic YWRtaW46YWRtaW4xMjM=&#34;</span> <span style="color:#666;font-style:italic">&#39;http://localhost:8081/service/siesta/rest/v1/script/&#39;</span> <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>         -d <span style="color:#666;font-style:italic">&#39;{ &#34;name&#34;: &#34;updateAnonymousAccess&#34;, &#34;type&#34;: &#34;groovy&#34;, &#34;content&#34;: &#34;security.setAnonymousAccess(Boolean.valueOf(args))&#34; }&#39;</span></code></pre></div>
+<p>第一行命令用于下载文件：<code>-O</code> 以原文件名字保存，<code>-L</code> 重定向跟踪，<code>-C</code> 断点续传，<code>-C -</code>自动检测断点<br />
+第二行命令用于获取docker镜像的tag：<code>-S</code> 显示错误信息，<code>-s</code> 静默模式，<code>jq</code> 命令行的json处理工具<br />
+第三行命令用于发送POST请求：<code>-H</code>指定请求头，<code>-d</code>指定请求参数，这里是json格式，也可以将数据写入文件，通过<code>-d@data.json</code> 的形式来传递数据</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat -n file.txt
+$ nl file.txt</code></pre></div>
+<p>两个命令都可以显示文本内容并在行首加上行号，<code>nl</code>默认会忽略空行，而<code>cat</code>不会</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -u admin:admin <span style="color:#666;font-style:italic">&#34;http://grafana.test.com/api/admin/settings&#34;</span> 2&gt;/dev/null | json_reformat
+curl -u admin:admin <span style="color:#666;font-style:italic">&#34;http://grafana.test.com/api/admin/settings&#34;</span> 2&gt;/dev/null | python -m json.tool
+curl -u admin:admin <span style="color:#666;font-style:italic">&#34;http://grafana.test.com/api/admin/settings&#34;</span> 2&gt;/dev/null | jq.[]</code></pre></div>
+<p><code>yajl</code>软件包，<code>json_reformat</code>命令可以将标准输出的json内容格式化，以便于阅读<br />
+python的json.tool模块也可用于json格式化<br />
+<code>jq</code>有更加强大的功能，不仅可以格式化json，还可以从json中取出相应字段。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ du -sh *</code></pre></div>
+<p>可以显示当前一级目录下所有目录（或文件）的大小，<code>-h</code>以人类可读的单位显示，<code>-s</code>只显示当前目录下的文件，不递归显示，<code>*</code>代表当前目录下所有文件</p>
+
+<p>shell 脚本中<code>''</code>和<code>&quot;&quot;</code>效果不同，<code>''</code>中的字符串被当作一般字符串处理，即使有<code>$varaible</code>的字符串也不会被解析，而<code>&quot;&quot;</code>中的变量会被解析。</p>
+
+<p>shell 脚本中``和<code>$()</code>用于命令替换，<code>${}</code>用于变量替换，变量替换功能非常强大，有类似切片的功能</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sed -i -e <span style="color:#666;font-style:italic">&#34;s/profiler.collector.ip=172.20.0.219/profiler.collector.ip=localhost/&#34;</span> -e <span style="color:#666;font-style:italic">&#34;/profiler.collector.ip=/a profiler.jvm.vendor.name=Oracle&#34;</span> -e <span style="color:#666;font-style:italic">&#34;s/profiler.sampling.rate=20/profiler.sampling.rate=1/&#34;</span> pinpoint.config
+sed -i 1d pinpoint.config
+sed -i <span style="color:#666;font-style:italic">&#34;1d;3d&#34;</span> test.txt
+sed -i <span style="color:#666;font-style:italic">&#34;1,3d&#34;</span> test.txt</code></pre></div>
+<p><code>-i</code> 直接修改文件
+<code>-e</code> 指定多个匹配项
+<code>s/pattern/changer/</code> 修改匹配
+<code>/pattern/a \line1\nline2</code> 在匹配项后添加行，<code>\n</code> 分行
+<code>/pattern/i \line</code> 在匹配项前添加行
+<code>1d;3d</code> 删除第一行和第三行
+<code>1,3d</code> 删除第一到三行</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">xrandr -s 1366x768</code></pre></div>
+<p><code>xrandr</code> 用于强制修改分辨率，可以用 <code>xrandr</code> 命令列出可用的分辨率</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ nohup <span style="font-weight:bold;font-style:italic">command</span> &gt; run.log 2&gt;&amp;1 &amp;
+$ nohup <span style="font-weight:bold;font-style:italic">command</span> &amp;&gt; run.log &amp;</code></pre></div>
+<p><code>nohup ... &amp;</code>可以将程序后台运行，<code>&amp;&gt;</code>可以将标准输出和错误输出都重定向到文件中，<code>2&gt;&amp;1</code> 表示将错误输出重定向到标准输出。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ telnet towel.blinkenlights.nl</code></pre></div>
+<p>在终端里看《星球大战》</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl wttr.in/shanghai</code></pre></div>
+<p>终端下的天气预报</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="font-weight:bold">for</span> code in {0..255};<span style="font-weight:bold">do</span>
+    <span style="font-weight:bold;font-style:italic">echo</span> -en <span style="color:#666;font-style:italic">&#34;\e[38;05;</span><span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">code</span><span style="color:#666;font-style:italic">}</span><span style="color:#666;font-style:italic">m██&#34;</span>
+<span style="font-weight:bold">done</span></code></pre></div>
+<p>在终端中输出 256 色的色块</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ <span style="color:#666;font-weight:bold;font-style:italic">A</span>=1;<span style="font-weight:bold;font-style:italic">echo</span> <span style="color:#666;font-weight:bold;font-style:italic">$A</span>;{ <span style="color:#666;font-weight:bold;font-style:italic">A</span>=2; };<span style="font-weight:bold;font-style:italic">echo</span> <span style="color:#666;font-weight:bold;font-style:italic">$A</span>
+1
+2
+$ <span style="color:#666;font-weight:bold;font-style:italic">A</span>=1;<span style="font-weight:bold;font-style:italic">echo</span> <span style="color:#666;font-weight:bold;font-style:italic">$A</span>;( <span style="color:#666;font-weight:bold;font-style:italic">A</span>=2; );<span style="font-weight:bold;font-style:italic">echo</span> <span style="color:#666;font-weight:bold;font-style:italic">$A</span>
+1
+1 </code></pre></div>
+<p><code>{}</code>中的命令会在当前进程中执行，<code>()</code>中的命令会在子进程中执行</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">seq 100</code></pre></div>
+<p>用于生成一个 1~100 的序列</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ansible -i hosts all -m shell -a <span style="color:#666;font-style:italic">&#34;free | sed &#39;1d;3d&#39; | awk &#39;{print \$3/\$2}&#39;&#34;</span> | grep -v SUCCESS | awk <span style="color:#666;font-style:italic">&#39;{sum += $1;} END {print $sum/NR}&#39;</span></code></pre></div>
+<p>该命令可以用于计算集群机器的平均空闲内存的百分比，用到了 <code>sed</code>，<code>awk</code>，<code>grep</code> 等 linux 常用的文本处理工具。需要注意的是在 ansible 里使用 awk 时，变量需要用<code>\</code>转义<code>$</code></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ansible -i inventory/hosts all -m copy -a <span style="color:#666;font-style:italic">&#34;src=https://www.cheon.site/blog/etc/yum.repos.d/Centos-7.repo backup=yes dest=/etc/yum.repos.d&#34;</span></code></pre></div>
+<p>ansible copy 模块可用于将本机文件分发到其他节点</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">usage(){
+	cat <span style="color:#666;font-style:italic">&lt;&lt;-EOF
+</span><span style="color:#666;font-style:italic">		usage
+</span><span style="color:#666;font-style:italic">		EOF</span>
+}
+usage</code></pre></div>
+<p>bash 的 here document 可以用 tab 来缩进，注意必须是 tab，不能是空格。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="font-weight:bold;font-style:italic">exec</span> <span style="color:#666;font-weight:bold;font-style:italic">$SHELL</span> -l</code></pre></div>
+<p>重载shell而无需退出</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="font-weight:bold;font-style:italic">disown</span> -a &amp;&amp; exit</code></pre></div>
+<p>退出 shell 并保持子进程运行</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="font-weight:bold;font-style:italic">history</span> | <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>awk <span style="color:#666;font-style:italic">&#39;{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] &#34; &#34; CMD[a]/count*100 &#34;% &#34; a;}&#39;</span> | <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>grep -v <span style="color:#666;font-style:italic">&#34;./&#34;</span> | <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>column -c3 -s <span style="color:#666;font-style:italic">&#34; &#34;</span> -t | <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>sort -nr | nl |  head -n 20</code></pre></div>
+<p>列出最常使用的命令</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp filename{,.orig}</code></pre></div>
+<p>快速拷贝一份文件</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">&gt;filename</code></pre></div>
+<p>清空一个文件</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rm !(*.foo|*.bar|*.baz)</code></pre></div>
+<p>删除不匹配的文件</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rename foo bar foo*.txt </code></pre></div>
+<p><code>rename</code> 命令用于批量重命名文件，上述命令将 foo 替换为 bar，如 foo1.txt → bar1.txt，使用 <code>-nv</code> 参数可以 dry-run</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="font-weight:bold;font-style:italic">printf</span> <span style="color:#666;font-style:italic">&#34;%`tput cols`s&#34;</span> | tr <span style="color:#666;font-style:italic">&#39; &#39;</span> <span style="color:#666;font-style:italic">&#39;#&#39;</span></code></pre></div>
+<p>输出一整行的 <code>#</code></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">timeout 1 bash -c <span style="color:#666;font-style:italic">&#34;echo &gt; /dev/tcp/</span><span style="color:#666;font-weight:bold;font-style:italic">$ip</span><span style="color:#666;font-style:italic">/</span><span style="color:#666;font-weight:bold;font-style:italic">$port</span><span style="color:#666;font-style:italic">&#34;</span>
+[[ <span style="color:#666;font-weight:bold;font-style:italic">$?</span> -eq 0 ]] || <span style="font-weight:bold;font-style:italic">echo</span> <span style="color:#666;font-weight:bold;font-style:italic">$ip</span> <span style="color:#666;font-weight:bold;font-style:italic">$protocol</span> <span style="color:#666;font-weight:bold;font-style:italic">$port</span></code></pre></div>
+<p>用于检测端口是否畅通，不通则输出 ip、协议、端口。udp 同理</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mysqldump --set-gtid-purged=off --default-character-set=utf8 -u<span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_user</span><span style="color:#666;font-style:italic">}</span> -p<span style="color:#666;font-style:italic">&#34;</span><span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_password</span><span style="color:#666;font-style:italic">}</span><span style="color:#666;font-style:italic">&#34;</span> -h<span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_host</span><span style="color:#666;font-style:italic">}</span> --databases <span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_database</span><span style="color:#666;font-style:italic">}</span> &gt; ./backup-<span style="font-weight:bold">$(</span>date +%Y%m%d<span style="font-weight:bold">)</span>.sql
+mysql -u<span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_user</span><span style="color:#666;font-style:italic">}</span> -p<span style="color:#666;font-style:italic">&#34;</span><span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_password</span><span style="color:#666;font-style:italic">}</span><span style="color:#666;font-style:italic">&#34;</span> -h<span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_host</span><span style="color:#666;font-style:italic">}</span> <span style="color:#666;font-style:italic">${</span><span style="color:#666;font-weight:bold;font-style:italic">mysql_database</span><span style="color:#666;font-style:italic">}</span> &lt; ./backup-<span style="font-weight:bold">$(</span>date +%Y%m%d<span style="font-weight:bold">)</span>.sql</code></pre></div>
+<p>上述命令用于备份/恢复 mysql 数据库</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">screen -S sessionName
+screen -A -x sessionName</code></pre></div>
+<p>上述命令可以在多个终端间共享会话。<code>-A</code> 设置窗口大小为当前终端。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh -fNg -D 8081 appuser@192.168.0.101 -p 22</code></pre></div>
+<p>上述命令将创建 ssh 隧道，本地监听 8081 端口，配合浏览器插件 Proxy Switch Omega 即可实现翻墙。</p>
+
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Wed Apr 25, 2018
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/bash">bash</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        <li><a class="previous" href="https://www.cheon.site/blog/shell/bash_expansion/"> Bash Expansion</a></li>
+        
+        
+        <li><a class="next" href="https://www.cheon.site/blog/shell/es_clean_indices/"> Es Clean Indices</a></li>
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

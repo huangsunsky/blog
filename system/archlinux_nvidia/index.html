@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/system/">
+    
+    system
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/system/archlinux_nvidia/">
+    
+    Archlinux Nvidia
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>Archlinux Nvidia</h1>
+  <time>Last updated Tue Jan 7, 2020</time>
+  <div>
+      <article id="content">
+          
+
+<h1 id="table-of-contents">Table of Contents</h1>
+
+<ol>
+<li><a href="#org9a903ad">ArchLinux 配置 nvidia 独立显卡</a></li>
+<li><a href="#orgd2bf049">firefox webgl 配置独立显卡</a></li>
+</ol>
+
+<p><a id="org9a903ad"></a></p>
+
+<h1 id="archlinux-配置-nvidia-独立显卡">ArchLinux 配置 nvidia 独立显卡</h1>
+
+<p>按照 <a href="https://download.nvidia.com/XFree86/Linux-x86_64/435.21/README/primerenderoffload.html">PRIME Render Offload</a> 文档，安装新版本的 nvidia 驱动和 xorg，新版本的 xorg 安装包可以从 <a href="https://gitlab.freedesktop.org/aplattner/arch-xorg-server">arch-xorg-server</a> 构建。
+修改配置文件 <code>/etc/X11/xorg.conf</code> ，主要添加</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Section &#34;ServerLayout&#34;
+  Identifier &#34;layout&#34;
+  Option &#34;AllowNVIDIAGPUScreens&#34;
+EndSection</pre></div>
+<p>完整配置如下:</p>
+
+<p><details>
+<summary>xorg.conf</summary></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Section &#34;ServerLayout&#34;
+        Identifier     &#34;X.org Configured&#34;
+        Screen      0  &#34;Screen0&#34; 0 0
+        #Screen      1  &#34;Screen1&#34; RightOf &#34;Screen0&#34;
+        InputDevice    &#34;Mouse0&#34; &#34;CorePointer&#34;
+        InputDevice    &#34;Keyboard0&#34; &#34;CoreKeyboard&#34;
+        Option         &#34;AllowNVIDIAGPUScreens&#34;
+EndSection
+
+Section &#34;Files&#34;
+        ModulePath   &#34;/usr/lib/xorg/modules&#34;
+        ModulePath   &#34;/usr/lib/modules/extramodules-ARCH&#34;
+        FontPath     &#34;/usr/share/fonts/TTF&#34;
+        FontPath     &#34;/usr/share/fonts/adobe-source-code-pro&#34;
+EndSection
+
+Section &#34;Module&#34;
+        Load  &#34;glx&#34;
+        Load  &#34;nvidia-drm&#34;
+EndSection
+
+Section &#34;InputDevice&#34;
+        Identifier  &#34;Keyboard0&#34;
+        Driver      &#34;kbd&#34;
+EndSection
+
+Section &#34;InputDevice&#34;
+        Identifier  &#34;Mouse0&#34;
+        Driver      &#34;mouse&#34;
+        Option	    &#34;Protocol&#34; &#34;auto&#34;
+        Option	    &#34;Device&#34; &#34;/dev/input/mice&#34;
+        Option	    &#34;ZAxisMapping&#34; &#34;4 5 6 7&#34;
+EndSection
+
+Section &#34;Monitor&#34;
+        Identifier   &#34;Monitor0&#34;
+        VendorName   &#34;Monitor Vendor&#34;
+        ModelName    &#34;Monitor Model&#34;
+EndSection
+
+Section &#34;Device&#34;
+        ### Available Driver options are:-
+        ### Values: &lt;i&gt;: integer, &lt;f&gt;: float, &lt;bool&gt;: &#34;True&#34;/&#34;False&#34;,
+        ### &lt;string&gt;: &#34;String&#34;, &lt;freq&gt;: &#34;&lt;f&gt; Hz/kHz/MHz&#34;,
+        ### &lt;percent&gt;: &#34;&lt;f&gt;%&#34;
+        ### [arg]: arg optional
+        #Option     &#34;SWcursor&#34;           	# [&lt;bool&gt;]
+        #Option     &#34;kmsdev&#34;             	# &lt;str&gt;
+        #Option     &#34;ShadowFB&#34;           	# [&lt;bool&gt;]
+        #Option     &#34;AccelMethod&#34;        	# &lt;str&gt;
+        #Option     &#34;PageFlip&#34;           	# [&lt;bool&gt;]
+        #Option     &#34;ZaphodHeads&#34;        	# &lt;str&gt;
+        #Option     &#34;DoubleShadow&#34;       	# [&lt;bool&gt;]
+        Option      &#34;RenderAccel&#34;               &#34;1&#34;
+        Option      &#34;DPMS&#34;                      &#34;1&#34;
+        Option      &#34;RegistryDwords&#34;            &#34;EnableBrightnessControl=1&#34;
+        Identifier  &#34;Card0&#34;
+        Driver      &#34;modesetting&#34;
+        BusID       &#34;PCI:0:2:0&#34;
+EndSection
+
+Section &#34;Device&#34;
+        Identifier  &#34;Card1&#34;
+        Driver      &#34;nvidia&#34;
+        BusID       &#34;PCI:1:0:0&#34;
+        Option      &#34;RenderAccel&#34;               &#34;1&#34;
+        Option      &#34;DPMS&#34;                      &#34;1&#34;
+        Option      &#34;RegistryDwords&#34;            &#34;EnableBrightnessControl=1&#34;
+        Option      &#34;RegistryDwords&#34;            &#34;PowerMizerLevelAC=0x3&#34;
+        Option      &#34;RegistryDwords&#34;            &#34;PowerMizerLevel=0x2&#34;
+        Option      &#34;RegistryDwords&#34;            &#34;PerfLevelSrc=0x3333&#34;
+        Option      &#34;OnDemandVBlankInterrupts&#34;  &#34;1&#34;
+EndSection
+
+Section &#34;Screen&#34;
+        Identifier &#34;Screen0&#34;
+        Device     &#34;Card0&#34;
+        Monitor    &#34;Monitor0&#34;
+        SubSection &#34;Display&#34;
+                Viewport   0 0
+                Depth     1
+        EndSubSection
+        SubSection &#34;Display&#34;
+                Viewport   0 0
+                Depth     4
+        EndSubSection
+        SubSection &#34;Display&#34;
+                Viewport   0 0
+                Depth     8
+        EndSubSection
+        SubSection &#34;Display&#34;
+                Viewport   0 0
+                Depth     15
+        EndSubSection
+        SubSection &#34;Display&#34;
+                Viewport   0 0
+                Depth     16
+        EndSubSection
+        SubSection &#34;Display&#34;
+                Viewport   0 0
+                Depth     24
+        EndSubSection
+EndSection</pre></div>
+<p></details></p>
+
+<p>安装好软件后需要重启电脑，开启桌面后执行 <code>xrandr --listproviders</code> ，应该可以看到如下结果:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Providers: number : 2
+Provider 0: id: 0x1e0 cap: 0xf, Source Output, Sink Output, Source Offload, Sink Offload crtcs: 3 outputs: 5 associated providers: 0 name:modesetting
+Provider 1: id: 0x1b8 cap: 0x0 crtcs: 0 outputs: 0 associated providers: 0 name:NVIDIA-G0</pre></div>
+<p>如果只看到一条记录，那可能是 <code>nvidia-drm</code> 模块没有加载，需要手动加载一下:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">modprobe nvidia-drm</pre></div>
+<p>重启 xorg 服务后应该看到两个 provider，执行 <code>nvidia-smi</code> 应该有如下结果</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">+-----------------------------------------------------------------------------+
+| NVIDIA-SMI 435.21       Driver Version: 435.21       CUDA Version: 10.1     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 1050    Off  | 00000000:01:00.0 Off |                  N/A |
+| N/A   34C    P8    N/A /  N/A |     36MiB /  4042MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|    0      1243      G   /usr/lib/Xorg                                 36MiB |
++-----------------------------------------------------------------------------+</pre></div>
+<p><a id="orgd2bf049"></a></p>
+
+<h1 id="firefox-webgl-配置独立显卡">firefox webgl 配置独立显卡</h1>
+
+<p>默认情况下应用都使用集成显卡来运行，如果需要使用独立显卡，需要添加环境变量:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia firefox</pre></div>
+<p>在 firefox 打开 <code>about:support</code> 页面，在 <code>Graphics</code> 下查看 <code>WebGL 1 Driver Renderer</code> ，如果发现如下报错:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">WebGL creation failed: 
+Refused to create native OpenGL context because of blacklist entry: FEATURE&lt;sub&gt;FAILURE&lt;/sub&gt;&lt;sub&gt;GLXTEST&lt;/sub&gt;&lt;sub&gt;FAILED&lt;/sub&gt;
+Exhausted GL driver options.</pre></div>
+<p>那可以打开 firefox 的 <code>about:config</code> 页面，修改 <code>webgl.force-enable</code> 为 <code>true</code> ，重启 firefox，应该就能看到 <code>WebGL 1 Driver Renderer</code> 显示的是独立显卡了。
+打开 <a href="http://www.fishgl.com/">fishgl</a> 可以测试 webgl。同时再执行 <code>nvidia-smi</code> 的话可以看到有 firefox 的进程。</p>
+
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Sun Sep 29, 2019
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/system">system</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        <li><a class="previous" href="https://www.cheon.site/blog/system/nerd_font/"> Nerd Font</a></li>
+        
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

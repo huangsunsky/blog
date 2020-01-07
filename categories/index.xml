@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/categories/</link>
+    <description>Recent content in Categories on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 16 Dec 2019 16:40:16 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>solved</title>
+      <link>https://www.cheon.site/blog/categories/solved/</link>
+      <pubDate>Mon, 16 Dec 2019 16:40:16 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/categories/solved/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>c</title>
+      <link>https://www.cheon.site/blog/categories/c/</link>
+      <pubDate>Thu, 28 Nov 2019 15:21:52 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/categories/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>system</title>
+      <link>https://www.cheon.site/blog/categories/system/</link>
+      <pubDate>Sun, 29 Sep 2019 14:07:53 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/categories/system/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>struct</title>
+      <link>https://www.cheon.site/blog/categories/struct/</link>
+      <pubDate>Thu, 01 Aug 2019 16:34:31 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/categories/struct/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>shell</title>
+      <link>https://www.cheon.site/blog/categories/shell/</link>
+      <pubDate>Thu, 13 Jun 2019 13:51:36 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/categories/shell/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

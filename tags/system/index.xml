@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>system on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/system/</link>
+    <description>Recent content in system on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 29 Sep 2019 14:07:53 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/system/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Archlinux Nvidia</title>
+      <link>https://www.cheon.site/blog/system/archlinux_nvidia/</link>
+      <pubDate>Sun, 29 Sep 2019 14:07:53 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/system/archlinux_nvidia/</guid>
+      <description>Table of Contents  ArchLinux 配置 nvidia 独立显卡 firefox webgl 配置独立显卡  
+ArchLinux 配置 nvidia 独立显卡 按照 PRIME Render Offload 文档，安装新版本的 nvidia 驱动和 xorg，新版本的 xorg 安装包可以从 arch-xorg-server 构建。 修改配置文件 /etc/X11/xorg.conf ，主要添加
+Section &amp;#34;ServerLayout&amp;#34; Identifier &amp;#34;layout&amp;#34; Option &amp;#34;AllowNVIDIAGPUScreens&amp;#34; EndSection 完整配置如下:
+ xorg.conf
+Section &amp;#34;ServerLayout&amp;#34; Identifier &amp;#34;X.org Configured&amp;#34; Screen 0 &amp;#34;Screen0&amp;#34; 0 0 #Screen 1 &amp;#34;Screen1&amp;#34; RightOf &amp;#34;Screen0&amp;#34; InputDevice &amp;#34;Mouse0&amp;#34; &amp;#34;CorePointer&amp;#34; InputDevice &amp;#34;Keyboard0&amp;#34; &amp;#34;CoreKeyboard&amp;#34; Option &amp;#34;AllowNVIDIAGPUScreens&amp;#34; EndSection Section &amp;#34;Files&amp;#34; ModulePath &amp;#34;/usr/lib/xorg/modules&amp;#34; ModulePath &amp;#34;/usr/lib/modules/extramodules-ARCH&amp;#34; FontPath &amp;#34;/usr/share/fonts/TTF&amp;#34; FontPath &amp;#34;/usr/share/fonts/adobe-source-code-pro&amp;#34; EndSection Section &amp;#34;Module&amp;#34; Load &amp;#34;glx&amp;#34; Load &amp;#34;nvidia-drm&amp;#34; EndSection Section &amp;#34;InputDevice&amp;#34; Identifier &amp;#34;Keyboard0&amp;#34; Driver &amp;#34;kbd&amp;#34; EndSection Section &amp;#34;InputDevice&amp;#34; Identifier &amp;#34;Mouse0&amp;#34; Driver &amp;#34;mouse&amp;#34; Option	&amp;#34;Protocol&amp;#34; &amp;#34;auto&amp;#34; Option	&amp;#34;Device&amp;#34; &amp;#34;/dev/input/mice&amp;#34; Option	&amp;#34;ZAxisMapping&amp;#34; &amp;#34;4 5 6 7&amp;#34; EndSection Section &amp;#34;Monitor&amp;#34; Identifier &amp;#34;Monitor0&amp;#34; VendorName &amp;#34;Monitor Vendor&amp;#34; ModelName &amp;#34;Monitor Model&amp;#34; EndSection Section &amp;#34;Device&amp;#34; ### Available Driver options are:- ### Values: &amp;lt;i&amp;gt;: integer, &amp;lt;f&amp;gt;: float, &amp;lt;bool&amp;gt;: &amp;#34;True&amp;#34;/&amp;#34;False&amp;#34;, ### &amp;lt;string&amp;gt;: &amp;#34;String&amp;#34;, &amp;lt;freq&amp;gt;: &amp;#34;&amp;lt;f&amp;gt; Hz/kHz/MHz&amp;#34;, ### &amp;lt;percent&amp;gt;: &amp;#34;&amp;lt;f&amp;gt;%&amp;#34; ### [arg]: arg optional #Option &amp;#34;SWcursor&amp;#34; # [&amp;lt;bool&amp;gt;] #Option &amp;#34;kmsdev&amp;#34; # &amp;lt;str&amp;gt; #Option &amp;#34;ShadowFB&amp;#34; # [&amp;lt;bool&amp;gt;] #Option &amp;#34;AccelMethod&amp;#34; # &amp;lt;str&amp;gt; #Option &amp;#34;PageFlip&amp;#34; # [&amp;lt;bool&amp;gt;] #Option &amp;#34;ZaphodHeads&amp;#34; # &amp;lt;str&amp;gt; #Option &amp;#34;DoubleShadow&amp;#34; # [&amp;lt;bool&amp;gt;] Option &amp;#34;RenderAccel&amp;#34; &amp;#34;1&amp;#34; Option &amp;#34;DPMS&amp;#34; &amp;#34;1&amp;#34; Option &amp;#34;RegistryDwords&amp;#34; &amp;#34;EnableBrightnessControl=1&amp;#34; Identifier &amp;#34;Card0&amp;#34; Driver &amp;#34;modesetting&amp;#34; BusID &amp;#34;PCI:0:2:0&amp;#34; EndSection Section &amp;#34;Device&amp;#34; Identifier &amp;#34;Card1&amp;#34; Driver &amp;#34;nvidia&amp;#34; BusID &amp;#34;PCI:1:0:0&amp;#34; Option &amp;#34;RenderAccel&amp;#34; &amp;#34;1&amp;#34; Option &amp;#34;DPMS&amp;#34; &amp;#34;1&amp;#34; Option &amp;#34;RegistryDwords&amp;#34; &amp;#34;EnableBrightnessControl=1&amp;#34; Option &amp;#34;RegistryDwords&amp;#34; &amp;#34;PowerMizerLevelAC=0x3&amp;#34; Option &amp;#34;RegistryDwords&amp;#34; &amp;#34;PowerMizerLevel=0x2&amp;#34; Option &amp;#34;RegistryDwords&amp;#34; &amp;#34;PerfLevelSrc=0x3333&amp;#34; Option &amp;#34;OnDemandVBlankInterrupts&amp;#34; &amp;#34;1&amp;#34; EndSection Section &amp;#34;Screen&amp;#34; Identifier &amp;#34;Screen0&amp;#34; Device &amp;#34;Card0&amp;#34; Monitor &amp;#34;Monitor0&amp;#34; SubSection &amp;#34;Display&amp;#34; Viewport 0 0 Depth 1 EndSubSection SubSection &amp;#34;Display&amp;#34; Viewport 0 0 Depth 4 EndSubSection SubSection &amp;#34;Display&amp;#34; Viewport 0 0 Depth 8 EndSubSection SubSection &amp;#34;Display&amp;#34; Viewport 0 0 Depth 15 EndSubSection SubSection &amp;#34;Display&amp;#34; Viewport 0 0 Depth 16 EndSubSection SubSection &amp;#34;Display&amp;#34; Viewport 0 0 Depth 24 EndSubSection EndSection</description>
+    </item>
+    
+  </channel>
+</rss>

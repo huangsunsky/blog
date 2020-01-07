@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>icons on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/icons/</link>
+    <description>Recent content in icons on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 21 Jun 2019 14:32:35 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/icons/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Nerd Font</title>
+      <link>https://www.cheon.site/blog/system/nerd_font/</link>
+      <pubDate>Fri, 21 Jun 2019 14:32:35 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/system/nerd_font/</guid>
+      <description>图标字体 在用 dzen2 给桌面添加一个 panel 的时候用到了 FontAwesome，但是在 urxvt 终端下 FontAwesome 无法正常显示出来（不知是不是配置有误）。这样在用 vim 写脚本时不够直观。又不想换终端，所以只能从字体下手。
+之前就了解到过 nerd-fonts 这个项目，可以将图标字体整合进一个你想要的字体中。项目主页提供了一些已经预先构建好的字体，可以在官网直接下载使用。目前终端用的字体是从另一台 Mac 上复制出来的 SFMono，这也是 Mac 内置终端默认的字体。已经习惯了这款字体后就不想换了，因此准备构建自己的字体。
+根据项目主页的教程，执行它提供给你的 font-patcher 脚本前需要安装 fontforge:
+pacman -S fontforge 安装完依赖，下载 font-patcher 脚本并添加可执行权限:
+curl -OL https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/font-patcher chmod +x font-patcher 执行脚本进行构建字体:
+./font-patcher path/to/SFMono-Regular.otf -out path/to/SFMono-Nerd/ -c -l -s  -c 表示添加所有可用字形 -l 表示适应行高（尝试将 powerline 的分隔符均匀地放在中间） -s 表示使用单个字符宽度  运行脚本发现报错，提示找不到 src 目录下的字体文件。这提示我们还需要去下载 src 目录下的字体文件。这里有一个技巧，关于如何从 github 下载某个文件夹。
+以此处为例，需要下载https://github.com/ryanoasis/nerd-fonts/tree/master/src/glyphs目录下的所有字体文件。可以将 url 中的 &amp;ldquo;tree/master&amp;rdquo; 替换为 ”trunk“，再用 svn 去下载就好了。</description>
+    </item>
+    
+  </channel>
+</rss>

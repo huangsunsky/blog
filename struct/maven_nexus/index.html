@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/struct/">
+    
+    struct
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/struct/maven_nexus/">
+    
+    Maven &amp; Nexus
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>Maven &amp; Nexus</h1>
+  <time>Last updated Fri Jun 14, 2019</time>
+  <div>
+      <article id="content">
+          
+
+<h1 id="maven-配置使用-nexus-私服">maven 配置使用 nexus 私服</h1>
+
+<p>修改~/.m2/settings.xml内容如下：</p>
+
+<p><details>
+<summary>mvn config</summary></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#888;font-weight:bold">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+&lt;settings xmlns=<span style="color:#666;font-style:italic">&#34;http://maven.apache.org/SETTINGS/1.0.0&#34;</span>
+          xmlns:xsi=<span style="color:#666;font-style:italic">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+          xsi:schemaLocation=<span style="color:#666;font-style:italic">&#34;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&#34;</span>&gt;
+    &lt;servers&gt;
+        &lt;server&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;admin123&lt;/password&gt;
+        &lt;/server&gt;
+        &lt;server&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;admin123&lt;/password&gt;
+        &lt;/server&gt;
+        &lt;server&gt;
+            &lt;id&gt;thirdpart&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;admin123&lt;/password&gt;
+        &lt;/server&gt;
+    &lt;/servers&gt;
+
+    &lt;mirrors&gt;
+        &lt;mirror&gt;
+            &lt;id&gt;central&lt;/id&gt;
+            &lt;name&gt;central&lt;/name&gt;
+            &lt;url&gt;http://localhost:8081/nexus/content/groups/public/&lt;/url&gt;
+            &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;
+        &lt;/mirror&gt;
+    &lt;/mirrors&gt;
+
+&lt;/settings&gt;</code></pre></div>
+<p></details></p>
+
+<p>在项目的 pom.xml 文件中添加如下内容：</p>
+
+<p><details>
+<summary>pom config</summary></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">&lt;distributionManagement&gt;
+    &lt;snapshotRepository&gt;
+        &lt;id&gt;snapshots&lt;/id&gt;
+        &lt;name&gt;Snapshot Repository&lt;/name&gt;
+        &lt;url&gt;http://localhost:8081/nexus/content/repositories/snapshots/&lt;/url&gt;
+    &lt;/snapshotRepository&gt;
+    &lt;repository&gt;
+        &lt;id&gt;releases&lt;/id&gt;
+        &lt;name&gt;Release Repository&lt;/name&gt;
+        &lt;url&gt;http://localhost:8081/nexus/content/repositories/releases/&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/distributionManagement&gt;
+
+&lt;repositories&gt;
+    &lt;repository&gt;
+        &lt;id&gt;public&lt;/id&gt;
+        &lt;name&gt;Public&lt;/name&gt;
+        &lt;url&gt;http://localhost:8081/nexus/content/groups/public&lt;/url&gt;
+        &lt;releases&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/releases&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/snapshots&gt;
+    &lt;/repository&gt;
+    &lt;repository&gt;
+        &lt;id&gt;snapshots&lt;/id&gt;
+        &lt;name&gt;Snapshots&lt;/name&gt;
+        &lt;url&gt;http://localhost:8081/nexus/content/repositories/snapshots&lt;/url&gt;
+        &lt;releases&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/releases&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/snapshots&gt;
+    &lt;/repository&gt;
+    &lt;repository&gt;
+        &lt;id&gt;thirdparty&lt;/id&gt;
+        &lt;name&gt;3rd party&lt;/name&gt;
+        &lt;url&gt;http://localhost:8081/nexus/content/repositories/thirdparty/&lt;/url&gt;
+        &lt;releases&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/releases&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/snapshots&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+&lt;pluginRepositories&gt;
+    &lt;pluginRepository&gt;
+        &lt;id&gt;public&lt;/id&gt;
+        &lt;name&gt;Plugin Repository&lt;/name&gt;
+        &lt;url&gt;http://localhost:8081/nexus/content/groups/public&lt;/url&gt;
+        &lt;layout&gt;default&lt;/layout&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/snapshots&gt;
+    &lt;/pluginRepository&gt;
+&lt;/pluginRepositories&gt;</code></pre></div>
+<p></details></p>
+
+<h1 id="向-nexus-中部署-snapshot-版本的包">向 nexus 中部署 snapshot 版本的包</h1>
+
+<ol>
+<li>如果是在项目中(已配置好私服环境)，可以直接运行<code>mvn deploy</code>来将文件上传到nexus私服中</li>
+
+<li><p>如果只有单独的jar包或war包，可以运行以下命令部署：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn deploy:deploy-file <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -DgroupId=<span style="font-weight:bold;font-style:italic">test</span> <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -DartifactId=<span style="font-weight:bold;font-style:italic">test</span> <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -Dversion=1.0-SNAPSHOT <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -Dpackaging=jar <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -Dfile=test-1.0-SNAPSHOT.jar <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -Durl=http://localhost:8081/nexus/content/repositories/snapshots/ <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -DrepositoryId=snapshots <span style="color:#666;font-style:italic">\
+</span><span style="color:#666;font-style:italic"></span>    -s ~/.m2/settings.xml</code></pre></div>
+<p><code>-Dfile</code>指定文件的路径，<code>-s</code>指定maven运行的配置文件</p></li>
+</ol>
+
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Thu Nov 9, 2017
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/maven">maven</a> </li>
+      
+        <li> <a href="https://www.cheon.site/blog/tags/nexus">nexus</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        <li><a class="previous" href="https://www.cheon.site/blog/struct/etcd_and_flannel/"> Etcd &amp; Flannel</a></li>
+        
+        
+        <li><a class="next" href="https://www.cheon.site/blog/struct/k8s_cluster_deploy/"> K8s Cluster Deploy</a></li>
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

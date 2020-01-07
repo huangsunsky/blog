@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>archlinux on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/archlinux/</link>
+    <description>Recent content in archlinux on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 28 Mar 2018 10:18:12 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/archlinux/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Dell Xps 15 9560 Arch Linux Install</title>
+      <link>https://www.cheon.site/blog/system/dell_xps_15_9560_arch_linux_install/</link>
+      <pubDate>Wed, 28 Mar 2018 10:18:12 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/system/dell_xps_15_9560_arch_linux_install/</guid>
+      <description>Dell XPS 15 9560 Arch Linux 安装教程 BIOS设置 打开电脑，等待出现dell图标时按下F12键，选择进入BIOS设置页面，进行如下操作
+ 将SATA Mode从默认的RAID模式修改为AHCI模式。这样可以允许Linux检测到NVME SSD。 将Fastboot的选项从POST Behaviour修改为Thorough，这样可以防止偶尔的启动错误。 关闭安全启动来允许linux启动。  保存后退出，会重启电脑。
+内核启动参数设置 从U盘启动 Arch Linux 引导镜像：在dell图标出现时按下F12，选择从U盘启动，在出现启动菜单时，按下e键，添加以下启动参数：
+initrd=\initramfs-linux.img root=/dev/sdb2 acpi_rev_override=1 pci=nommconf nouveau.modeset=0 这样可以保证系统可以正常关闭和重启，否则关闭和重启时电脑会死机。
+系统安装 tty字体设置 首先由于4k屏的高分辨率，使得终端字体非常小，应该设置大一点的字体：
+setfont latarcyrheb-sun32 网络连接 wifi-menu 根据提示选择wifi，输入密码即可。
+分区 这里采用lvm并使用cryptsetup来加密磁盘，最终分区如下：
+NAME MAJ:MIN RM SIZE RO TYPE MOUNTPOINT nvme0n1 259:0 0 477G 0 disk ├─nvme0n1p1 259:1 0 512M 0 part /boot └─nvme0n1p2 259:2 0 476.4G 0 part └─luks 254:0 0 476.4G 0 crypt ├─entropy--vg0-root 254:1 0 150G 0 lvm / ├─entropy--vg0-home 254:2 0 250G 0 lvm /home ├─entropy--vg0-swap 254:3 0 16G 0 lvm [SWAP] └─entropy--vg0-backup 254:4 0 10G 0 lvm  磁盘创建两个分区，一个分区用于/boot，另一个分区用于安装系统。</description>
+    </item>
+    
+  </channel>
+</rss>

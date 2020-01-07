@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>iptables on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/iptables/</link>
+    <description>Recent content in iptables on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 26 Apr 2018 08:32:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/iptables/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Iptables Intro</title>
+      <link>https://www.cheon.site/blog/system/iptables_intro/</link>
+      <pubDate>Thu, 26 Apr 2018 08:32:31 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/system/iptables_intro/</guid>
+      <description>iptables 介绍 基本概念  iptables 可以检测、修改、转发、重定向和丢弃IPV4数据包。 表(tables)  raw: 用于配置数据包 filter: 存放所有与防火墙相关操作的表 nat: 用于网络地址转换 mangle: 用于对特定数据包的修改 security: 用于强制访问控制  链(chains): INPUT, OUTPUT, FORWARD, PREROUTING,POSTROUTING 规则(rules): 过滤数据包 模块(modules): 用于扩展iptables，进行更复杂的过滤  工作流程 第一个路由策略包括决定数据包的目的地是本地主机（这种情况下，数据包穿过 INPUT 链），还是其他主机（数据包穿过 FORWARD 链）；
+中间的路由策略包括决定给传出的数据包使用那个源地址、分配哪个接口；
+最后一个路由策略存在是因为 mangle 与 nat 链可能会改变数据包的路由信息。
+数据包通过路径上的每一条链时，链中的每一条规则按顺序匹配；无论何时匹配了一条规则，相应的 target/jump 动作将会执行。最常用的3个 target 是 ACCEPT, DROP ,或者 jump 到用户自定义的链。内置的链有默认的策略，但是用户自定义的链没有默认的策略。在 jump 到的链中，若每一条规则都不能提供完全匹配，那么数据包返回到调用链。在任何时候，若 DROP target 的规则实现完全匹配，那么被匹配的数据包会被丢弃，不会进行进一步处理。如果一个数据包在链中被 ACCEPT，那么它也会被所有的父链 ACCEPT，并且不再遍历其他父链。然而，要注意的是，数据包还会以正常的方式继续遍历其他表中的其他链。
+常用选项    参数类型 可选项     表 filter, nat&amp;hellip;   链 INPUT, OUTPUT, FORWARD, PREOUTING（修改目标ip地址）, POSTROUTING（修改源ip地址）&amp;hellip;   匹配属性 源、目标IP，协议（TCP,UDP,ICMP&amp;hellip;），端口号，网卡接口&amp;hellip;   模块 conntrack, multiport, connlimit&amp;hellip;   动作 ACCEPT, DROP, RETURN, REJECT&amp;hellip;    配置运行 # systemctl start iptables 启动时会读取/etc/iptables/iptables.</description>
+    </item>
+    
+  </channel>
+</rss>

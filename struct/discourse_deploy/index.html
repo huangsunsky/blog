@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/struct/">
+    
+    struct
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/struct/discourse_deploy/">
+    
+    Discourse Deploy
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>Discourse Deploy</h1>
+  <time>Last updated Fri Jun 14, 2019</time>
+  <div>
+      <article id="content">
+          <h1 id="discourse-docker-部署">discourse docker 部署</h1>
+
+<h2 id="部署说明">部署说明</h2>
+
+<ul>
+<li>目标：以容器的方式部署discourse到网站的二级域名，如 <code>http://test.test.com/community/</code></li>
+<li>架构：1个postgres数据库，1个redis数据库，1个discourse服务器</li>
+</ul>
+
+<h2 id="部署步骤">部署步骤</h2>
+
+<p>按照官方的建议，采用官方提供的脚本来构建镜像。</p>
+
+<ol>
+<li><p>克隆官方的工具库</p>
+
+<p>git clone <a href="https://github.com/discourse/discourse_docker.git">https://github.com/discourse/discourse_docker.git</a></p></li>
+
+<li><p>复制<code>templates</code>目录下的<code>postgres.template.yml</code>，<code>redis.template.yml</code>，<code>web.china.template.yml</code>文件到<code>containers</code>目录下，分别重命名为<code>postgresql.yml</code>，<code>redis.yml</code>，<code>discourse.yml</code></p></li>
+
+<li><p>编辑<code>postgresql.yml</code>，完整内容如下：</p>
+
+<p><details>
+<summary>postgresql.yml</summary></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">templates:
+  - &#34;templates/postgres.template.yml&#34;
+params:
+  db_default_text_search_config: &#34;pg_catalog.english&#34;
+  # 设置postgresql运行内存，可以根据需要设置大小
+  db_work_mem: &#34;2048MB&#34;
+
+expose:
+  # 暴露端口 主机端口:容器端口
+  - &#34;5432:5432&#34;
+
+env:
+  LANG: en_US.UTF-8
+
+volumes:
+  # 挂载数据卷
+  - volume:
+        host: /path/to/postgresql
+        guest: /shared
+  - volume:
+        host: /path/to/postgresql/log/var-log
+        guest: /var/log
+
+hooks:
+  after_postgres:
+    - exec:
+        stdin: |
+          alter user discourse with password &#39;test&#39;;
+        cmd: su - postgres -c &#39;psql discourse&#39;
+
+        raise_on_fail: false</pre></div>
+<p></details></p></li>
+
+<li><p>编辑<code>redis.yml</code>，内容如下：</p>
+
+<p><details>
+<summary>redis.yml</summary></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">templates:
+  - &#34;templates/redis.template.yml&#34;
+
+expose:
+  # 暴露端口
+  - &#34;6379:6379&#34;
+
+
+env:
+  LANG: en_US.UTF-8
+
+volumes:
+  - volume:
+        host: /path/to/redis
+        guest: /shared
+  - volume:
+        host: /path/to/redis/log/var-log
+        guest: /var/log</pre></div>
+<p></details></p></li>
+
+<li><p>编辑<code>discourse.yml</code>，内容如下：</p>
+
+<p><details>
+<summary>discourse.yml</summary></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">templates:
+  - &#34;templates/web.template.yml&#34;
+  - &#34;templates/web.ratelimited.template.yml&#34;
+
+expose:
+  - &#34;10083:80&#34;
+
+# Use &#39;links&#39; key to link containers together, aka use Docker --link flag.
+links:
+  - link:
+      name: postgresql
+      alias: postgresql
+  - link:
+      name: redis
+      alias: redis
+
+env:
+  LANG: en_US.UTF-8
+
+  DISCOURSE_DB_SOCKET: &#39;&#39;
+  # postgres 数据库用户名
+  DISCOURSE_DB_USERNAME: example
+  # postgres 数据库密码
+  DISCOURSE_DB_PASSWORD: example
+  # postgres 数据库主机
+  DISCOURSE_DB_HOST: postgresql
+  # redis 数据库主机
+  DISCOURSE_REDIS_HOST: redis
+
+  # 设置开发者邮箱
+  DISCOURSE_DEVELOPER_EMAILS: &#39;example@example.com&#39;
+
+  DISCOURSE_HOSTNAME: &#39;discourse.example.com&#39;
+
+  # 配置邮件服务器信息
+  DISCOURSE_SMTP_ADDRESS: example.example.com
+  DISCOURSE_SMTP_PORT: 25
+  DISCOURSE_SMTP_USER_NAME: user.example.com
+  DISCOURSE_SMTP_PASSWORD: password
+  DISCOURSE_SMTP_AUTHENTICATION: login
+
+  # 启用discourse跨域请求
+  DISCOURSE_ENABLE_CORS: true
+  DISCOURSE_CORS_ORIGIN: &#39;*&#39;
+  # 设置discourse相对路径
+  DISCOURSE_RELATIVE_URL_ROOT: /community
+
+volumes:
+  - volume:
+      host: /path/to/web-only
+      guest: /shared
+  - volume:
+      host: /path/to/web-only/log/var-log
+      guest: /var/log
+  - volume:
+      host: /path/to/web-only/asserts
+      guest: /var/www/discourse/public/assets
+
+hooks:
+  after_code:
+    - exec:
+        cd: $home/plugins
+        cmd:
+          - git clone https://github.com/discourse/docker_manager.git
+          # 安装cas登录插件，安装好后需要后续的配置
+          - git clone https://github.com/tyl3k/cas_sso.git
+          - git clone https://github.com/discourse/discourse-solved.git
+          # 安装sitemap插件
+          - git clone https://github.com/discoursehosting/discourse-sitemap.git
+
+run:
+  - exec: echo &#34;Beginning of custom commands&#34;
+  # 为资源创建软链接，保证二级url的discourse能找到资源 
+  - exec: mkdir /var/www/discourse/public/community
+  - exec: ln -s /var/www/discourse/public/assets /var/www/discourse/public/community/assets
+  - exec: ln -s /var/www/discourse/public/backups /var/www/discourse/public/community/backups
+  - exec: ln -s /var/www/discourse/public/images /var/www/discourse/public/community/images
+  - exec: ln -s /var/www/discourse/public/javascripts /var/www/discourse/public/community/javascripts
+  - exec: ln -s /var/www/discourse/public/plugins /var/www/discourse/public/community/plugins
+  - exec: ln -s /var/www/discourse/public/service-worker.js /var/www/discourse/public/community/service-worker.js
+  - exec: ln -s /var/www/discourse/public/uploads /var/www/discourse/public/community/uploads
+  # 修改digest邮件模板退订链接
+  - exec: sed -i &#34;s/host: Discourse.base_url_no_prefix/host: Discourse.base_url/&#34; /var/www/discourse/app/views/user_notifications/digest.html.erb
+  - exec: echo &#34;End of custom commands&#34;
+  - exec: awk -F\# &#39;{print $1;}&#39; ~/.ssh/authorized_keys | awk &#39;BEGIN { print &#34;Authorized SSH keys for this container:&#34;; } NF&gt;=2 {print $NF;}&#39;</pre></div>
+<p></details></p></li>
+
+<li><p>依次启动容器：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./launcher start redis
+./launcher start postgresql
+./launcher start discourse</code></pre></div>
+<ol>
+<li><p>创建管理员帐号：</p></li>
+
+<li><p>进入discourse容器：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./launcher enter discousre</code></pre></div>
+<ol>
+<li>创建管理员帐号：</li>
+</ol>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rake admin:create</code></pre></div></li>
+</ol>
+
+<p>按照提示输入邮箱和密码，即可创建拥有管理员权限的帐号</p>
+
+<p><img src="https://www.cheon.site/blog/struct/images/discourse_deploy_img1.png" alt="管理员帐号创建" /></p>
+
+<ol>
+<li>在浏览器中输入服务器ip地址加80端口即可访问discourse，可用创建好的帐号登录。</li>
+</ol></li>
+</ol>
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Wed Oct 18, 2017
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/discourse">discourse</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        
+        <li><a class="next" href="https://www.cheon.site/blog/struct/discourse_cas/"> Discourse Cas</a></li>
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

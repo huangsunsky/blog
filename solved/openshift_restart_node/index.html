@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta name="description" content=Aloha!&#32;Welcome&#32;to&#32;cheon&#39;s&#32;blog.>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes= "76x76" href=https://www.cheon.site/blog/img/apple-touch-icon.png>
+    <link rel="icon" href=https://www.cheon.site/blog/img/pen.svg>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/global.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/nav.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/header.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/index.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/list.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/single.css>
+    <link rel="stylesheet" href=https://www.cheon.site/blog/css/footer.css>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Sans+SC|Old+Standard+TT&display=swap" rel="stylesheet">
+    
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>cheon&#39;s blog</title>
+
+</head>
+<body><section id="header">
+    <ul id="menus">
+    
+    <li class="menu"><a href="https://www.cheon.site"><span>Home</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/categories"><span>Categories</span></a></li>
+    
+    <li class="menu"><a href="https://www.cheon.site/blog/tags"><span>Tags</span></a></li>
+    
+    <li class="menu"><a href="https://github.com/number317"><span>Projects</span></a></li>
+    
+    </ul>
+    <h1 id="title"><a href="https://www.cheon.site/blog/">cheon&#39;s blog</a></h1>
+</section>
+<ul class="nav">
+
+
+
+
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/">
+    
+    cheon&#39;s blog
+    
+    </a>
+</li>
+
+
+<li>
+    »
+    <a href="https://www.cheon.site/blog/solved/">
+    
+    solved
+    
+    
+    </a>
+</li>
+
+
+<li class="active">
+    »
+    <a href="https://www.cheon.site/blog/solved/openshift_restart_node/">
+    
+    Openshift Restart Node
+    
+    </a>
+</li>
+
+</ul>
+
+<div>
+<section id="main">
+  <h1>Openshift Restart Node</h1>
+  <time>Last updated Fri Jun 14, 2019</time>
+  <div>
+      <article id="content">
+          
+
+<h1 id="openshift-节点无法连接集群">openshift 节点无法连接集群</h1>
+
+<p>在openshift master 节点上执行<code>oc get node</code>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ oc get node
+NAME      STATUS                        AGE
+node1     NotReady,SchedulingDisabled   301d
+master1   Ready                         308d
+master2   Ready                         308d
+master3   Ready                         308d
+master4   Ready                         308d
+master5   Ready                         31d</code></pre></div>
+<p>其中的node1状态为<code>NotReady,SchedulingDisabled</code>，改节点没有准备好，并且是无法调度的，其中无法调度是手动设置的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ openshift admin manage-node node1 --schedulable=false</code></pre></div>
+<p>重启<code>origin-node</code>服务，让节点重新连接集群：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ systemctl restart origin-node</code></pre></div>
+<p>重新查看节点状态：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ oc get node
+NAME      STATUS                        AGE
+node1     Ready,SchedulingDisabled      301d
+master1   Ready                         308d
+master2   Ready                         308d
+master3   Ready                         308d
+master4   Ready                         308d
+master5   Ready                         31d</code></pre></div>
+<p>节点已经 ready，再将其设置为可调度的：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ openshift admin manage-node node1 --schedulable=true</code></pre></div>
+<h1 id="疏散-pods">疏散 Pods</h1>
+
+<p>标记节点不可调度:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ openshift admin manage-node &lt;node&gt; --schedulable=false</code></pre></div>
+<p>列出节点上所有的Pods,请再次确认:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ oadm manage-node &lt;node1&gt; &lt;node2&gt; --evacuate --dry-run [--pod-selector=&lt;pod_selector&gt;]</code></pre></div>
+<p>疏散 Pods:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ oadm drain &lt;node1&gt; &lt;node2&gt;</code></pre></div>
+<p>如果无法疏散，可以强制疏散:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ oadm drain &lt;node1&gt; &lt;node2&gt; --force</code></pre></div>
+<h2 id="删除-node-调度">删除 node 调度</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ oc delete node &lt;node&gt;</code></pre></div>
+<p>进行确认:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ oc get nodes</code></pre></div>
+      </article>
+  </div>
+</section>
+
+<aside>
+    <h4 id="signature">
+        Thu Mar 8, 2018
+        
+            cheon
+        
+    </h4>
+    
+    
+    <ul class="tags">
+      
+        <li> <a href="https://www.cheon.site/blog/tags/openshift">openshift</a> </li>
+      
+    </ul>
+    
+    <ul class="related">
+        
+        <li><a class="previous" href="https://www.cheon.site/blog/solved/tomcat_deploy_error/"> Tomcat Deploy Error</a></li>
+        
+        
+        <li><a class="next" href="https://www.cheon.site/blog/solved/firefox_open_markdown/"> Firefox Open Markdown</a></li>
+        
+    </ul>
+</aside>
+
+        </div><section id="footer">
+
+<div id="author">
+    <h2>About Author</h2>
+    <hr>
+    <img src=https://www.cheon.site/images/author.jpg></img>
+    <p>Life is dance we all have to do.</p>
+</div>
+<ul id="link">
+    <li><a href=https://github.com/number317/aloha.git target="_blank"><i class="fa fa-github" alt="github"></i></a></li>
+    <li><a href="mailto:cheon0112358d@gmail.com?subject=blog%27s%20feedback" target="_blank"><i class="fa fa-envelope" alt="email"></i></a></li>
+    <li id="wechat"><i class="fa fa-wechat"></i></li>
+    <img class="qrcode" src=https://www.cheon.site/images/wechat.jpg>
+</ul>
+</section>
+</body>
+</html>

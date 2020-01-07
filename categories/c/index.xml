@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>c on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/categories/c/</link>
+    <description>Recent content in c on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 28 Nov 2019 15:21:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/categories/c/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GNU Argp</title>
+      <link>https://www.cheon.site/blog/c/gnu_argp/</link>
+      <pubDate>Thu, 28 Nov 2019 15:21:52 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/c/gnu_argp/</guid>
+      <description>Table of Contents  GNU Argp 库  前置知识  从一个示例开始 命令行参数 选项的参数  step0: 第一个 argp 程序 step1: 短选项 step2: 选项参数 step3: 长选项 step4: 可选项 step5: 别名 step6: 回调自身 step7: 参数支持 step8: 隐藏选项 step9: 完善说明 step10: 选项组 step11: 调用库   
+GNU Argp 库 c 命令行程序中的参数处理是很常见的需求，要做到这点我们可以用 GNU 的标准库 argp，大部分 GNU 组件都用这个库来解析参数。
+
+前置知识 
+从一个示例开始 先来看一个例子:
+  sum --help 
+sum --help Usage: sum [OPTION]... [FILE]... Print checksum and block counts for each FILE.</description>
+    </item>
+    
+    <item>
+      <title>Low Level I/O</title>
+      <link>https://www.cheon.site/blog/c/low_level_io/</link>
+      <pubDate>Tue, 27 Aug 2019 09:07:47 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/c/low_level_io/</guid>
+      <description>底层 I/O 任务由标准 I/O 库函数执行，即缓冲和输入/输出转换，不总是可取的。例如，直接和诸如磁带驱动器之类的设备执行输入和输出时，程序员需要能够确定缓冲区要使用的大小，而不是让 stdio 的函数执行它。当然，系统提供这一层级的控制。标准 I/O 库是底层 I/O 库的一个用户友好的接口。
+文件描述符 在标准 I/O 中，文件由文件指针引用。使用底层接口时，文件由文件描述符引用，由一个简单的整数来指代。在标准 I/O 中，有三个预先定义的文件描述符，0,1,2，分别指向标准输入，标准输出和标准错误输出。
+不同于标准 I/O 库，为标准输入输出提供了速记函数，所有的底层 I/O 函数需要一个合适的文件描述符传递给它们。
+打开和创建文件 open 函数用于打开一个文件用于读写或创建。它接收三个参数：要打开文件名的字符串，一个整数指定文件的打开方式，一个整数 mode 当创建一个文件。成功时，它返回一个整数的文件描述符，失败时返回 -1。第二个参数在 sys/file.h(Berkeley) 或 sys/fcntl.h(System V)中定义如下：
+ O_RDONLY 只读模式 O_WRONLY 只写模式 O_RDWR 读写模式 O_APPEND 追加模式 O_CREAT 创建文件如果不存在，这个模式应该给出第三个参数 O_TRUNC 截断文件长度为0用于写 O_EXCL 返回错误如果创建文件时文件存在 O_NDELAY 打开文件时不阻塞  关闭文件 close 函数用于关闭文件，只接收一个参数，引用于要关闭文件的文件描述符。成功时返回0；出错时返回-1。
+读写文件 在底层接口中读写文件只有一个办法，一次一个缓冲区。缓冲区大小留给程序员定义，需要确定一个合适的值。例如，如果一个程序一侧值读写一个字符而不是几千个字符，操作系统将为每个字符都访问一次硬盘（或其他设备），导致程序执行非常缓慢。
+read 系统调用接收三个参数：一个文件描述符用于读取，一个指针指向缓冲区等待填写数据，一个整数表示要读取的字节数。返回实际读取的字节数，或者出错时返回 -1，到达文件末尾时返回 0。
+write 系统调用接收三个参数：一个文件描述符用于写入，一个指针指向缓冲区存放要写的数据，一个整数表示要写入的字节数。返回实际写入的字节数，或者出错时返回 -1。
+下面的代码实现了文件追加的功能：
+ code
+#include &amp;lt;unistd.h&amp;gt;#include &amp;lt;fcntl.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;string.</description>
+    </item>
+    
+    <item>
+      <title>Standard I/O</title>
+      <link>https://www.cheon.site/blog/c/standard_io/</link>
+      <pubDate>Fri, 23 Aug 2019 09:29:15 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/c/standard_io/</guid>
+      <description>c 常用标准输入输出 在 c 程序中，常使用标准 I/O 库(stdio)中的方法来实现输入输出操作。这些方法是高层次的输入输出，因为他们有三个重要的功能:
+ 缓冲区自动操作。相对于一次写入几个字节数据，这些方法实际上一次可以写入一大块数据，通常有数千个字节。缓冲区的大小在 stdio.h 的常量 BUFSIZ 定义。
+ 输入和输出的转换。例如当使用 printf 来打印一个整数(用 %d 控制)，代表那个整数的字符将会被打印。相似的，当使用 scanf，代表那个数字的字符被转换成数值。
+ 输入和输出自动格式化。你可以指定宽度以及其他任何格式来打印数字和字符串。
+  文件指针 在标准 I/O 库中，一个文件被称为一个流(stream)，用一个指向 FILE 类型的对象指针来描述，叫做文件指针(file pointer)。FILE 文件类型在 stdio.h 中定义。有三个预先定义好的文件指针：stdin，stdout，stderr，分别代表标准输入（键盘），标准输出（终端屏幕），和标准错误输出。
+大多数标准输入输出库中的函数需要一个文件指针代表一个打开的流作为参数。当从标准输入读取数据或输出到标准输出时，标准 I/O 库提供了一些速记函数来指定这些流而无需再传递参数。下表指明了这些速记函数和他们的等价函数:
+   Shorthand Equivalent     getchar() fgetc(stdin), getc(stdin)   gets(buf) fgets(buf, BUFSIZ, stdin)   printf(args) fprintf(stdout, args)   putchar(c) fputc(c, stdout), putc(c, stdout)   puts(buf) fputs(buf, stdout)   scanf(args) fscanf(stdin, args)    打开和创建文件 为了能够从文件读或写入文件，那个文件必须被打开用于读写。fopen 函数就是用于这个目的。这个函数读取两个参数：一个字符串代表文件名，一个字符串用于描述文件被怎样打开。它返回一个打开的 FILE 文件流，或者如果无法打开指定文件时会返回常量 NULL。fopen 的第二个参数可以是以下值：</description>
+    </item>
+    
+    <item>
+      <title>C Sonarcloud</title>
+      <link>https://www.cheon.site/blog/c/c_sonarcloud/</link>
+      <pubDate>Mon, 06 May 2019 14:55:56 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/c/c_sonarcloud/</guid>
+      <description>C 配置 Sonarcloud SonarQube 用于代码质量分析，可以检测出代码的 bug，代码异味，测试覆盖率等，有助于提高代码质量。SonarCloud 是 SonarQube 的在线使用版本，可以集成 github，travisCI。具体操作可以看官方文档。
+之前写了一个终端管理 ssh 登录的小工具，想着检测一下代码质量，就想到用这个工具来检测一下。由于不需要每次提交都进行质量检测，所以没有集成到 CI 里面，而是在服务器上利用 SonarQube Scanner 手动执行。从检测结果来看，代码中确实有一些 bug 和代码异味。
+安装 build wrapper 在下载页下载 linux 版的 build wrapper，解压出来应该有两个可执行文件。
+build-wrapper-linux-x86/ ├── build-wrapper-linux-x86-32 ├── build-wrapper-linux-x86-64 ├── libinterceptor-i686.so └── libinterceptor-x86_64.so 可以将该目录加进PATH变量，方便调用。
+安装 SonarQube Scanner 在下载页找到对应的平台，下载压缩包。解压后得到如下目录：
+sonar-scanner-3.3.0.1492-linux ├── bin ├── conf ├── jre └── lib 可以将上面的bin目录添加到PATH环境变量中。
+构建并分析代码 在项目的根目录下执行命令：
+build-wrapper-linux-x86-64 --out-dir bw-output make export JAVA_TOOL_OPTIONS=&amp;#34;-Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=443 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=443&amp;#34; sonar-scanner \  -Dsonar.projectKey=number317_ssh-tool \  -Dsonar.</description>
+    </item>
+    
+  </channel>
+</rss>

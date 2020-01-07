@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>sonarqub on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/sonarqub/</link>
+    <description>Recent content in sonarqub on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 06 May 2019 14:55:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/sonarqub/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>C Sonarcloud</title>
+      <link>https://www.cheon.site/blog/c/c_sonarcloud/</link>
+      <pubDate>Mon, 06 May 2019 14:55:56 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/c/c_sonarcloud/</guid>
+      <description>C 配置 Sonarcloud SonarQube 用于代码质量分析，可以检测出代码的 bug，代码异味，测试覆盖率等，有助于提高代码质量。SonarCloud 是 SonarQube 的在线使用版本，可以集成 github，travisCI。具体操作可以看官方文档。
+之前写了一个终端管理 ssh 登录的小工具，想着检测一下代码质量，就想到用这个工具来检测一下。由于不需要每次提交都进行质量检测，所以没有集成到 CI 里面，而是在服务器上利用 SonarQube Scanner 手动执行。从检测结果来看，代码中确实有一些 bug 和代码异味。
+安装 build wrapper 在下载页下载 linux 版的 build wrapper，解压出来应该有两个可执行文件。
+build-wrapper-linux-x86/ ├── build-wrapper-linux-x86-32 ├── build-wrapper-linux-x86-64 ├── libinterceptor-i686.so └── libinterceptor-x86_64.so 可以将该目录加进PATH变量，方便调用。
+安装 SonarQube Scanner 在下载页找到对应的平台，下载压缩包。解压后得到如下目录：
+sonar-scanner-3.3.0.1492-linux ├── bin ├── conf ├── jre └── lib 可以将上面的bin目录添加到PATH环境变量中。
+构建并分析代码 在项目的根目录下执行命令：
+build-wrapper-linux-x86-64 --out-dir bw-output make export JAVA_TOOL_OPTIONS=&amp;#34;-Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=443 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=443&amp;#34; sonar-scanner \  -Dsonar.projectKey=number317_ssh-tool \  -Dsonar.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vpn on cheon&#39;s blog</title>
+    <link>https://www.cheon.site/blog/tags/vpn/</link>
+    <description>Recent content in vpn on cheon&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 28 Apr 2018 15:22:21 +0800</lastBuildDate>
+    
+	<atom:link href="https://www.cheon.site/blog/tags/vpn/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Vps Openvpn</title>
+      <link>https://www.cheon.site/blog/system/vps_openvpn/</link>
+      <pubDate>Sat, 28 Apr 2018 15:22:21 +0800</pubDate>
+      
+      <guid>https://www.cheon.site/blog/system/vps_openvpn/</guid>
+      <description>VPS OpenVPN 翻墙教程 服务端配置 首先，需要一台能访问外网的服务器。这里采用的是HostUS的VPS。
+在部署OpenVPN服务端之前，应该先打开服务器的ip转发功能。修改/etc/sysctl.conf文件，将对应内容修改为下面一行的值：
+net.ipv4.ip_forward = 1 修改后执行sysctl -p /etc/sysctl.conf使配置生效。
+服务端采用容器部署，因此VPS应该先安装好docker。以下为容器启动脚本：
+#!/bin/bash IP=&amp;#34;xxx.xxx.xxx.xxx&amp;#34; OVPN_DATA=&amp;#34;/root/ovpn_data&amp;#34; docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://$IP docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki docker run -v $OVPN_DATA:/etc/openvpn --name openvpn -e DEBUG=1 -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME &amp;gt; CLIENTNAME.ovpn 将上述脚本的IP地址替换为自己的IP地址，然后执行脚本，根据提示输入信息即可。中间要求输入密码之类的都写个简单点一样的密码就好。
+脚本执行完成后会生成一个CLIENTNAME.ovpn客户端的配置文件，将它下载到自己的电脑上，用于配置客户端。</description>
+    </item>
+    
+  </channel>
+</rss>
